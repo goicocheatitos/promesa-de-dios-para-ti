@@ -797,12 +797,12 @@
         <div class="bcard-action">Ver Bosquejo →</div>
       </div>
       <!-- Jóvenes -->
-      <div class="bosquejo-card disabled" id="card-jovenes">
+      <div class="bosquejo-card" id="card-jovenes" onclick="openBosquejo('jovenes')">
         <div class="bcard-icon">🌟</div>
         <div class="bcard-badge">Jóvenes</div>
-        <div class="bcard-lesson">Próximamente</div>
-        <div class="bcard-title">Bosquejos disponibles pronto</div>
-        <div class="bcard-action" style="color:var(--muted)">Muy pronto…</div>
+        <div class="bcard-lesson" id="jovenes-lesson-num">Cargando…</div>
+        <div class="bcard-title" id="jovenes-lesson-title">…</div>
+        <div class="bcard-action">Ver Bosquejo →</div>
       </div>
     </div>
   </section>
@@ -1045,6 +1045,22 @@ document.getElementById('user-input').addEventListener('input', function() {
 });
 
 // ─── Bosquejos ───────────────────────────────────────────────────
+const JOVENES_LESSONS = [
+  { num: 1,  trimLabel: 'II Trimestre 2026', title: 'GOLPE DE REALIDAD',                  sabbath: '2026-04-04', pdf: 'leccion01-IIT26.pdf', ppt: null },
+  { num: 2,  trimLabel: 'II Trimestre 2026', title: 'CONOCIENDO A DIOS',                  sabbath: '2026-04-11', pdf: 'leccion02-IIT26.pdf', ppt: null },
+  { num: 3,  trimLabel: 'II Trimestre 2026', title: 'ORGULLO VERSUS HUMILDAD',             sabbath: '2026-04-18', pdf: 'leccion03-IIT26.pdf', ppt: null },
+  { num: 4,  trimLabel: 'II Trimestre 2026', title: 'EL ROL DE LA BIBLIA',                sabbath: '2026-04-25', pdf: 'leccion04-IIT26.pdf', ppt: null },
+  { num: 5,  trimLabel: 'II Trimestre 2026', title: 'CÓMO ESTUDIAR LA BIBLIA',            sabbath: '2026-05-02', pdf: 'leccion05-IIT26.pdf', ppt: null },
+  { num: 6,  trimLabel: 'II Trimestre 2026', title: 'MI VIDA DE ORACIÓN',                 sabbath: '2026-05-09', pdf: 'leccion06-IIT26.pdf', ppt: null },
+  { num: 7,  trimLabel: 'II Trimestre 2026', title: 'LA ORACIÓN PERSEVERANTE',            sabbath: '2026-05-16', pdf: 'leccion07-IIT26.pdf', ppt: null },
+  { num: 8,  trimLabel: 'II Trimestre 2026', title: 'LA FE',                              sabbath: '2026-05-23', pdf: 'leccion08-IIT26.pdf', ppt: null },
+  { num: 9,  trimLabel: 'II Trimestre 2026', title: 'EL PECADO, EL EVANGELIO Y LA LEY',  sabbath: '2026-05-30', pdf: 'leccion09-IIT26.pdf', ppt: null },
+  { num: 10, trimLabel: 'II Trimestre 2026', title: 'ARREPENTIMIENTO Y PERDÓN',           sabbath: '2026-06-06', pdf: 'leccion10-IIT26.pdf', ppt: null },
+  { num: 11, trimLabel: 'II Trimestre 2026', title: 'REVESES',                            sabbath: '2026-06-13', pdf: 'leccion11-IIT26.pdf', ppt: null },
+  { num: 12, trimLabel: 'II Trimestre 2026', title: 'COMPÁRTELO',                         sabbath: '2026-06-20', pdf: 'leccion12-IIT26.pdf', ppt: null },
+  { num: 13, trimLabel: 'II Trimestre 2026', title: 'HACIA LA ETERNIDAD',                 sabbath: '2026-06-27', pdf: 'leccion13-IIT26.pdf', ppt: null },
+];
+
 const ADULTOS_LESSONS = [
   { num: 13, trim: 'I',  trimLabel: 'I Trimestre 2026',  title: 'PERMANECER EN TODA LA VOLUNTAD DE DIOS', sabbath: '2026-03-28', pdf: 'leccion13-IT26.pdf',  ppt: null },
   { num: 1,  trim: 'II', trimLabel: 'II Trimestre 2026', title: 'EVALÚATE',                               sabbath: '2026-04-04', pdf: 'leccion01-IIT26.pdf', ppt: 'leccion01-IIT26.pptx' },
@@ -1080,18 +1096,21 @@ function formatSabbathDate(dateStr) {
 }
 
 function initBosquejos() {
-  const lesson = getCurrentLesson(ADULTOS_LESSONS);
-  document.getElementById('bosquejo-week-label').textContent = formatSabbathDate(lesson.sabbath);
-  document.getElementById('adultos-lesson-num').textContent = `Lección ${lesson.num} · ${lesson.trimLabel}`;
-  document.getElementById('adultos-lesson-title').textContent = lesson.title;
+  const lessonA = getCurrentLesson(ADULTOS_LESSONS);
+  const lessonJ = getCurrentLesson(JOVENES_LESSONS);
+  document.getElementById('bosquejo-week-label').textContent = formatSabbathDate(lessonA.sabbath);
+  document.getElementById('adultos-lesson-num').textContent = `Lección ${lessonA.num} · ${lessonA.trimLabel}`;
+  document.getElementById('adultos-lesson-title').textContent = lessonA.title;
+  document.getElementById('jovenes-lesson-num').textContent = `Lección ${lessonJ.num} · ${lessonJ.trimLabel}`;
+  document.getElementById('jovenes-lesson-title').textContent = lessonJ.title;
 }
 
 function openBosquejo(type) {
-  if (type !== 'adultos') return;
-  const lesson = getCurrentLesson(ADULTOS_LESSONS);
-  const base = './bosquejos/adultos/';
+  const isAdultos = type === 'adultos';
+  const lesson = isAdultos ? getCurrentLesson(ADULTOS_LESSONS) : getCurrentLesson(JOVENES_LESSONS);
+  const base = isAdultos ? './bosquejos/adultos/' : './bosquejos/jovenes/';
 
-  document.getElementById('bmodal-badge').textContent = `Adultos · ${lesson.trimLabel}`;
+  document.getElementById('bmodal-badge').textContent = `${isAdultos ? 'Adultos' : 'Jóvenes'} · ${lesson.trimLabel}`;
   document.getElementById('bmodal-title').textContent = `Lección ${lesson.num} · ${lesson.title}`;
   document.getElementById('bmodal-date').textContent = `Para el Sábado ${formatSabbathDate(lesson.sabbath)}`;
 
