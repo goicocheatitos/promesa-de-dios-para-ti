@@ -462,6 +462,170 @@
     }
     .quick-btn .qicon { font-size: 1rem; }
 
+    /* ── Bosquejos Section ── */
+    .bosquejos-section {
+      margin-top: 2rem;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 1.8rem 2rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+    .bosquejos-header {
+      display: flex; align-items: center; gap: 1rem;
+      margin-bottom: 1.4rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .bosquejos-header-icon {
+      font-size: 1.8rem;
+      filter: drop-shadow(0 0 8px rgba(201,168,76,0.5));
+    }
+    .bosquejos-header-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem; font-weight: 600;
+      color: var(--gold-light);
+    }
+    .bosquejos-header-sub {
+      font-size: 0.78rem; color: var(--muted); margin-top: 0.2rem;
+    }
+    .bosquejos-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    .bosquejo-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem 1.3rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex; flex-direction: column; gap: 0.5rem;
+      position: relative; overflow: hidden;
+    }
+    .bosquejo-card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(201,168,76,0.05) 0%, transparent 60%);
+      opacity: 0; transition: opacity 0.2s;
+    }
+    .bosquejo-card:hover::before { opacity: 1; }
+    .bosquejo-card:hover {
+      border-color: rgba(201,168,76,0.45);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+    .bosquejo-card.disabled {
+      opacity: 0.45; cursor: default;
+    }
+    .bosquejo-card.disabled:hover {
+      border-color: var(--border); transform: none; box-shadow: none;
+    }
+    .bcard-icon { font-size: 1.8rem; margin-bottom: 0.2rem; }
+    .bcard-badge {
+      display: inline-block;
+      font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--gold); padding: 0.2rem 0.7rem;
+      border-radius: 999px; border: 1px solid rgba(201,168,76,0.3);
+      background: rgba(201,168,76,0.08); width: fit-content;
+    }
+    .bcard-lesson {
+      font-size: 0.8rem; color: var(--muted); margin-top: 0.1rem;
+    }
+    .bcard-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.05rem; font-weight: 600; color: var(--text);
+      line-height: 1.3;
+    }
+    .bcard-action {
+      font-size: 0.78rem; color: var(--gold);
+      margin-top: 0.4rem; letter-spacing: 0.03em;
+    }
+
+    /* ── Bosquejo Modal ── */
+    .bosquejo-overlay {
+      display: none;
+      position: fixed; inset: 0; z-index: 100;
+      background: rgba(10,5,25,0.85);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      padding: 1rem;
+      overflow-y: auto;
+    }
+    .bosquejo-overlay.open { display: flex; align-items: flex-start; justify-content: center; }
+    .bosquejo-modal {
+      background: #1e1540;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      width: 100%; max-width: 900px;
+      margin: auto;
+      overflow: hidden;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.7);
+      animation: modalIn 0.25s ease;
+    }
+    @keyframes modalIn {
+      from { opacity: 0; transform: translateY(20px) scale(0.98); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .bmodal-header {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      padding: 1.5rem 1.8rem 1.2rem;
+      border-bottom: 1px solid var(--border);
+      gap: 1rem;
+    }
+    .bmodal-badge {
+      font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 0.4rem;
+    }
+    .bmodal-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem; font-weight: 600; color: var(--gold-light);
+    }
+    .bmodal-date {
+      font-size: 0.78rem; color: var(--muted); margin-top: 0.3rem;
+    }
+    .bmodal-close {
+      background: rgba(255,255,255,0.07); border: 1px solid var(--border);
+      border-radius: 8px; color: var(--muted); cursor: pointer;
+      font-size: 1rem; width: 34px; height: 34px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: all 0.15s;
+    }
+    .bmodal-close:hover { background: rgba(255,255,255,0.12); color: var(--text); }
+    .bmodal-actions {
+      display: flex; gap: 0.7rem;
+      padding: 1rem 1.8rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .bmodal-btn {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.6rem 1.2rem;
+      border-radius: 10px; border: 1px solid var(--border);
+      font-size: 0.82rem; text-decoration: none; cursor: pointer;
+      transition: all 0.15s; font-family: 'Inter', sans-serif;
+    }
+    .bmodal-btn.pdf {
+      background: rgba(220,50,50,0.12); border-color: rgba(220,50,50,0.3);
+      color: #ff8a8a;
+    }
+    .bmodal-btn.pdf:hover { background: rgba(220,50,50,0.2); }
+    .bmodal-btn.ppt {
+      background: rgba(200,90,30,0.12); border-color: rgba(200,90,30,0.3);
+      color: #ffb07a;
+    }
+    .bmodal-btn.ppt:hover { background: rgba(200,90,30,0.22); }
+    .bmodal-btn.ppt.hidden { display: none; }
+    .bmodal-viewer {
+      width: 100%; height: 70vh; min-height: 480px;
+      background: #fff;
+    }
+    .bmodal-viewer iframe {
+      width: 100%; height: 100%; border: none; display: block;
+    }
+
     /* ── Footer ── */
     footer {
       text-align: center;
@@ -518,6 +682,10 @@
       .page-wrapper { padding: 0 1rem 2rem; }
       header { padding: 1.8rem 0 1.2rem; }
       .card { padding: 1.4rem 1.1rem; }
+      .bosquejos-section { padding: 1.3rem 1.2rem; }
+      .bosquejos-grid { grid-template-columns: 1fr; }
+      .bmodal-actions { flex-wrap: wrap; }
+      .bmodal-viewer { height: 60vh; }
     }
   </style>
 </head>
@@ -609,6 +777,56 @@
     </aside>
 
   </div><!-- /main-grid -->
+
+  <!-- ── Bosquejos Section ── -->
+  <section class="bosquejos-section">
+    <div class="bosquejos-header">
+      <span class="bosquejos-header-icon">📖</span>
+      <div>
+        <div class="bosquejos-header-title">Bosquejos de la Lección de Escuela Sabática</div>
+        <div class="bosquejos-header-sub">Semana del <span id="bosquejo-week-label">...</span></div>
+      </div>
+    </div>
+    <div class="bosquejos-grid">
+      <!-- Adultos -->
+      <div class="bosquejo-card" id="card-adultos" onclick="openBosquejo('adultos')">
+        <div class="bcard-icon">🎓</div>
+        <div class="bcard-badge">Adultos</div>
+        <div class="bcard-lesson" id="adultos-lesson-num">Cargando…</div>
+        <div class="bcard-title" id="adultos-lesson-title">…</div>
+        <div class="bcard-action">Ver Bosquejo →</div>
+      </div>
+      <!-- Jóvenes -->
+      <div class="bosquejo-card disabled" id="card-jovenes">
+        <div class="bcard-icon">🌟</div>
+        <div class="bcard-badge">Jóvenes</div>
+        <div class="bcard-lesson">Próximamente</div>
+        <div class="bcard-title">Bosquejos disponibles pronto</div>
+        <div class="bcard-action" style="color:var(--muted)">Muy pronto…</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Bosquejo Modal ── -->
+  <div class="bosquejo-overlay" id="bosquejo-overlay" onclick="handleOverlayClick(event)">
+    <div class="bosquejo-modal" id="bosquejo-modal">
+      <div class="bmodal-header">
+        <div>
+          <div class="bmodal-badge" id="bmodal-badge">Adultos · II Trimestre 2026</div>
+          <div class="bmodal-title" id="bmodal-title">Lección 1 · EVALÚATE</div>
+          <div class="bmodal-date" id="bmodal-date">Para el Sábado 4 de abril de 2026</div>
+        </div>
+        <button class="bmodal-close" onclick="closeBosquejo()">✕</button>
+      </div>
+      <div class="bmodal-actions">
+        <a class="bmodal-btn pdf" id="bmodal-pdf-btn" href="#" download>📄 Descargar PDF</a>
+        <a class="bmodal-btn ppt" id="bmodal-ppt-btn" href="#" download>📊 Descargar PowerPoint</a>
+      </div>
+      <div class="bmodal-viewer">
+        <iframe id="bmodal-iframe" src="" title="Bosquejo de la lección"></iframe>
+      </div>
+    </div>
+  </div>
 
   <footer>
     <p class="author">✦ Dr. Tito Goicochea M. · NEED DSA ✦</p>
@@ -826,8 +1044,88 @@ document.getElementById('user-input').addEventListener('input', function() {
   this.style.height = Math.min(this.scrollHeight, 120) + 'px';
 });
 
+// ─── Bosquejos ───────────────────────────────────────────────────
+const ADULTOS_LESSONS = [
+  { num: 13, trim: 'I',  trimLabel: 'I Trimestre 2026',  title: 'PERMANECER EN TODA LA VOLUNTAD DE DIOS', sabbath: '2026-03-28', pdf: 'leccion13-IT26.pdf',  ppt: null },
+  { num: 1,  trim: 'II', trimLabel: 'II Trimestre 2026', title: 'EVALÚATE',                               sabbath: '2026-04-04', pdf: 'leccion01-IIT26.pdf', ppt: 'leccion01-IIT26.pptx' },
+  { num: 2,  trim: 'II', trimLabel: 'II Trimestre 2026', title: 'CONOCIENDO A DIOS',                      sabbath: '2026-04-11', pdf: 'leccion02-IIT26.pdf', ppt: 'leccion02-IIT26.pptx' },
+  { num: 3,  trim: 'II', trimLabel: 'II Trimestre 2026', title: 'ORGULLO VERSUS HUMILDAD',                sabbath: '2026-04-18', pdf: 'leccion03-IIT26.pdf', ppt: 'leccion03-IIT26.pptx' },
+  { num: 4,  trim: 'II', trimLabel: 'II Trimestre 2026', title: 'EL ROL DE LA BIBLIA',                    sabbath: '2026-04-25', pdf: 'leccion04-IIT26.pdf', ppt: 'leccion04-IIT26.pptx' },
+  { num: 5,  trim: 'II', trimLabel: 'II Trimestre 2026', title: 'CÓMO ESTUDIAR LA BIBLIA',                sabbath: '2026-05-02', pdf: 'leccion05-IIT26.pdf', ppt: 'leccion05-IIT26.pptx' },
+  { num: 6,  trim: 'II', trimLabel: 'II Trimestre 2026', title: 'GUERREROS DE ORACIÓN',                   sabbath: '2026-05-09', pdf: 'leccion06-IIT26.pdf', ppt: 'leccion06-IIT26.pptx' },
+  { num: 7,  trim: 'II', trimLabel: 'II Trimestre 2026', title: 'LA ORACIÓN',                             sabbath: '2026-05-16', pdf: 'leccion07-IIT26.pdf', ppt: 'leccion07-IIT26.pptx' },
+  { num: 8,  trim: 'II', trimLabel: 'II Trimestre 2026', title: 'LA FE',                                  sabbath: '2026-05-23', pdf: 'leccion08-IIT26.pdf', ppt: 'leccion08-IIT26.pptx' },
+  { num: 9,  trim: 'II', trimLabel: 'II Trimestre 2026', title: 'EL PECADO, EL EVANGELIO Y LA LEY',       sabbath: '2026-05-30', pdf: 'leccion09-IIT26.pdf', ppt: 'leccion09-IIT26.pptx' },
+  { num: 10, trim: 'II', trimLabel: 'II Trimestre 2026', title: 'ARREPENTIMIENTO Y PERDÓN',               sabbath: '2026-06-06', pdf: 'leccion10-IIT26.pdf', ppt: 'leccion10-IIT26.pptx' },
+  { num: 11, trim: 'II', trimLabel: 'II Trimestre 2026', title: 'REVESES',                                sabbath: '2026-06-13', pdf: 'leccion11-IIT26.pdf', ppt: 'leccion11-IIT26.pptx' },
+  { num: 12, trim: 'II', trimLabel: 'II Trimestre 2026', title: 'COMPÁRTELO',                             sabbath: '2026-06-20', pdf: 'leccion12-IIT26.pdf', ppt: 'leccion12-IIT26.pptx' },
+  { num: 13, trim: 'II', trimLabel: 'II Trimestre 2026', title: 'HACIA LA ETERNIDAD',                     sabbath: '2026-06-27', pdf: 'leccion13-IIT26.pdf', ppt: 'leccion13-IIT26.pptx' },
+];
+
+function getCurrentLesson(lessons) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  for (const lesson of lessons) {
+    const sabbath = new Date(lesson.sabbath + 'T00:00:00');
+    if (today <= sabbath) return lesson;
+  }
+  return lessons[lessons.length - 1];
+}
+
+function formatSabbathDate(dateStr) {
+  const [y, m, d] = dateStr.split('-');
+  const months = ['enero','febrero','marzo','abril','mayo','junio',
+                  'julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  return `${parseInt(d)} de ${months[parseInt(m)-1]} de ${y}`;
+}
+
+function initBosquejos() {
+  const lesson = getCurrentLesson(ADULTOS_LESSONS);
+  document.getElementById('bosquejo-week-label').textContent = formatSabbathDate(lesson.sabbath);
+  document.getElementById('adultos-lesson-num').textContent = `Lección ${lesson.num} · ${lesson.trimLabel}`;
+  document.getElementById('adultos-lesson-title').textContent = lesson.title;
+}
+
+function openBosquejo(type) {
+  if (type !== 'adultos') return;
+  const lesson = getCurrentLesson(ADULTOS_LESSONS);
+  const base = './bosquejos/adultos/';
+
+  document.getElementById('bmodal-badge').textContent = `Adultos · ${lesson.trimLabel}`;
+  document.getElementById('bmodal-title').textContent = `Lección ${lesson.num} · ${lesson.title}`;
+  document.getElementById('bmodal-date').textContent = `Para el Sábado ${formatSabbathDate(lesson.sabbath)}`;
+
+  const pdfUrl = base + 'pdf/' + lesson.pdf;
+  document.getElementById('bmodal-pdf-btn').href = pdfUrl;
+  document.getElementById('bmodal-iframe').src = pdfUrl;
+
+  const pptBtn = document.getElementById('bmodal-ppt-btn');
+  if (lesson.ppt) {
+    pptBtn.href = base + 'ppt/' + lesson.ppt;
+    pptBtn.classList.remove('hidden');
+  } else {
+    pptBtn.classList.add('hidden');
+  }
+
+  document.getElementById('bosquejo-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeBosquejo() {
+  document.getElementById('bosquejo-overlay').classList.remove('open');
+  document.getElementById('bmodal-iframe').src = '';
+  document.body.style.overflow = '';
+}
+
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('bosquejo-overlay')) closeBosquejo();
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeBosquejo(); });
+
 // ─── Init ────────────────────────────────────────────────────────
 loadPromesas();
+initBosquejos();
 </script>
 </body>
 </html>
