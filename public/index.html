@@ -134,7 +134,7 @@
       box-shadow: 0 0 24px rgba(201,168,76,0.35), 0 4px 16px rgba(0,0,0,0.4);
     }
     .author-photo-wrap img {
-      width: 100%; height: 100%; object-fit: cover; object-position: center 18%;
+      width: 100%; height: 100%; object-fit: cover; object-position: center 8%;
     }
     .author-initials {
       font-family: 'Cormorant Garamond', serif;
@@ -479,9 +479,7 @@
     .bosquejos-logos {
       display: flex; align-items: center; gap: 0.7rem; flex-shrink: 0;
     }
-    .blogo { object-fit: contain; }
-    .blogo-adventist { height: 48px; width: auto; filter: invert(1); mix-blend-mode: screen; opacity: 0.9; }
-    .blogo-esviva    { height: 52px; width: 52px; border-radius: 50%; object-fit: cover; }
+    .bsec-icon { font-size: 2rem; line-height: 1; }
     .bosquejos-header-title {
       font-family: 'Cormorant Garamond', serif;
       font-size: 1.3rem; font-weight: 600;
@@ -539,9 +537,29 @@
       font-size: 1.05rem; font-weight: 600; color: var(--text);
       line-height: 1.3;
     }
-    .bcard-action {
-      font-size: 0.78rem; color: var(--gold);
-      margin-top: 0.4rem; letter-spacing: 0.03em;
+    .bcard-actions {
+      display: flex; gap: 0.5rem; margin-top: 0.7rem; flex-wrap: wrap;
+    }
+    .bcard-btn {
+      flex: 1; min-width: 110px;
+      padding: 0.5rem 0.7rem;
+      border-radius: 8px; border: none; cursor: pointer;
+      font-size: 0.76rem; font-weight: 500; letter-spacing: 0.02em;
+      display: flex; align-items: center; justify-content: center; gap: 0.35rem;
+      transition: all 0.2s;
+    }
+    .bcard-btn.pdf {
+      background: rgba(201,168,76,0.18); color: var(--gold);
+      border: 1px solid rgba(201,168,76,0.35);
+    }
+    .bcard-btn.pdf:hover { background: rgba(201,168,76,0.3); transform: translateY(-1px); }
+    .bcard-btn.ppt {
+      background: rgba(255,100,60,0.15); color: #ff9966;
+      border: 1px solid rgba(255,100,60,0.3);
+    }
+    .bcard-btn.ppt:hover { background: rgba(255,100,60,0.28); transform: translateY(-1px); }
+    .bcard-btn.ppt.unavailable {
+      opacity: 0.35; cursor: not-allowed; pointer-events: none;
     }
 
     /* ── Bosquejo Modal ── */
@@ -780,10 +798,7 @@
   <!-- ── Bosquejos Section ── -->
   <section class="bosquejos-section">
     <div class="bosquejos-header">
-      <div class="bosquejos-logos">
-        <img src="./logos/adventist-logo.png" alt="Iglesia Adventista" class="blogo blogo-adventist" />
-        <img src="./logos/esviva-logo.png" alt="Escuela Sabática" class="blogo blogo-esviva" />
-      </div>
+      <div class="bsec-icon">📖</div>
       <div>
         <div class="bosquejos-header-title">Bosquejos de la Lección de Escuela Sabática</div>
         <div class="bosquejos-header-sub">Semana del <span id="bosquejo-week-label">...</span></div>
@@ -791,20 +806,26 @@
     </div>
     <div class="bosquejos-grid">
       <!-- Adultos -->
-      <div class="bosquejo-card" id="card-adultos" onclick="openBosquejo('adultos')">
+      <div class="bosquejo-card" id="card-adultos">
         <div class="bcard-icon">🎓</div>
         <div class="bcard-badge">Adultos</div>
         <div class="bcard-lesson" id="adultos-lesson-num">Cargando…</div>
         <div class="bcard-title" id="adultos-lesson-title">…</div>
-        <div class="bcard-action">Ver Bosquejo →</div>
+        <div class="bcard-actions">
+          <button class="bcard-btn pdf" onclick="openBosquejoPDF('adultos')">📄 Bosquejo PDF</button>
+          <button class="bcard-btn ppt" id="adultos-ppt-btn" onclick="downloadBosquejoPPT('adultos')">📊 Bosquejo PPT</button>
+        </div>
       </div>
       <!-- Jóvenes -->
-      <div class="bosquejo-card" id="card-jovenes" onclick="openBosquejo('jovenes')">
+      <div class="bosquejo-card" id="card-jovenes">
         <div class="bcard-icon">🌟</div>
         <div class="bcard-badge">Jóvenes</div>
         <div class="bcard-lesson" id="jovenes-lesson-num">Cargando…</div>
         <div class="bcard-title" id="jovenes-lesson-title">…</div>
-        <div class="bcard-action">Ver Bosquejo →</div>
+        <div class="bcard-actions">
+          <button class="bcard-btn pdf" onclick="openBosquejoPDF('jovenes')">📄 Bosquejo PDF</button>
+          <button class="bcard-btn ppt unavailable" id="jovenes-ppt-btn" title="PPT no disponible para jóvenes">📊 Bosquejo PPT</button>
+        </div>
       </div>
     </div>
   </section>
@@ -822,7 +843,7 @@
       </div>
       <div class="bmodal-actions">
         <a class="bmodal-btn pdf" id="bmodal-pdf-btn" href="#" download>📄 Descargar PDF</a>
-        <a class="bmodal-btn ppt" id="bmodal-ppt-btn" href="#" download>📊 Descargar PowerPoint</a>
+        <a class="bmodal-btn ppt" id="bmodal-ppt-btn" href="#" download style="display:none">📊 PPT</a>
       </div>
       <div class="bmodal-viewer">
         <iframe id="bmodal-iframe" src="" title="Bosquejo de la lección"></iframe>
@@ -1119,9 +1140,10 @@ function initBosquejos() {
   document.getElementById('adultos-lesson-title').textContent = lessonA.title;
   document.getElementById('jovenes-lesson-num').textContent = `Lección ${lessonJ.num} · ${lessonJ.trimLabel}`;
   document.getElementById('jovenes-lesson-title').textContent = lessonJ.title;
+  initBosquejoBtns();
 }
 
-function openBosquejo(type) {
+function openBosquejoPDF(type) {
   const isAdultos = type === 'adultos';
   const lesson = isAdultos ? getCurrentLesson(ADULTOS_LESSONS) : getCurrentLesson(JOVENES_LESSONS);
   const base = isAdultos ? './bosquejos/adultos/' : './bosquejos/jovenes/';
@@ -1134,20 +1156,33 @@ function openBosquejo(type) {
   document.getElementById('bmodal-pdf-btn').href = pdfUrl;
   document.getElementById('bmodal-iframe').src = pdfUrl;
 
-  const pptBtn = document.getElementById('bmodal-ppt-btn');
-  if (lesson.ppt) {
-    pptBtn.href = base + 'ppt/' + lesson.ppt;
-    pptBtn.textContent = '📊 Descargar PowerPoint';
-    pptBtn.removeAttribute('onclick');
-    pptBtn.classList.remove('unavailable');
-  } else {
-    pptBtn.removeAttribute('href');
-    pptBtn.textContent = '📊 PowerPoint no disponible';
-    pptBtn.classList.add('unavailable');
-  }
-
   document.getElementById('bosquejo-overlay').classList.add('open');
   document.body.style.overflow = 'hidden';
+}
+
+function downloadBosquejoPPT(type) {
+  const isAdultos = type === 'adultos';
+  const lesson = isAdultos ? getCurrentLesson(ADULTOS_LESSONS) : getCurrentLesson(JOVENES_LESSONS);
+  if (!lesson.ppt) return;
+  const base = './bosquejos/adultos/ppt/';
+  const a = document.createElement('a');
+  a.href = base + lesson.ppt;
+  a.download = lesson.ppt;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+function initBosquejoBtns() {
+  const lessonA = getCurrentLesson(ADULTOS_LESSONS);
+  const pptBtn = document.getElementById('adultos-ppt-btn');
+  if (!lessonA.ppt) {
+    pptBtn.classList.add('unavailable');
+    pptBtn.title = 'PPT no disponible esta semana';
+  } else {
+    pptBtn.classList.remove('unavailable');
+    pptBtn.title = 'Descargar presentación PowerPoint';
+  }
 }
 
 function closeBosquejo() {
