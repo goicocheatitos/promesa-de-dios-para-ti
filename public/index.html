@@ -815,7 +815,7 @@
         <div class="bcard-title" id="adultos-lesson-title">…</div>
         <div class="bcard-actions">
           <button class="bcard-btn pdf" onclick="openBosquejoPDF('adultos')">📄 Bosquejo PDF</button>
-          <button class="bcard-btn ppt" id="adultos-ppt-btn" onclick="downloadBosquejoPPT('adultos')">📊 Bosquejo PPT</button>
+          <button class="bcard-btn ppt" id="adultos-ppt-btn" onclick="openBosquejoPPT('adultos')">📊 Bosquejo PPT</button>
         </div>
       </div>
       <!-- Jóvenes -->
@@ -844,8 +844,7 @@
         <button class="bmodal-close" onclick="closeBosquejo()">✕</button>
       </div>
       <div class="bmodal-actions">
-        <a class="bmodal-btn pdf" id="bmodal-pdf-btn" href="#" download>📄 Descargar PDF</a>
-        <a class="bmodal-btn ppt" id="bmodal-ppt-btn" href="#" download style="display:none">📊 PPT</a>
+        <a class="bmodal-btn pdf" id="bmodal-download-btn" href="#" download>📄 Descargar PDF</a>
       </div>
       <div class="bmodal-viewer">
         <iframe id="bmodal-iframe" src="" title="Bosquejo de la lección"></iframe>
@@ -1145,6 +1144,8 @@ function initBosquejos() {
   initBosquejoBtns();
 }
 
+const SITE_URL = 'https://promesa-de-dios-para-ti.vercel.app';
+
 function openBosquejoPDF(type) {
   const isAdultos = type === 'adultos';
   const lesson = isAdultos ? getCurrentLesson(ADULTOS_LESSONS) : getCurrentLesson(JOVENES_LESSONS);
@@ -1155,24 +1156,39 @@ function openBosquejoPDF(type) {
   document.getElementById('bmodal-date').textContent = `Semana del ${formatWeekRange(lesson.sabbath)}`;
 
   const pdfUrl = base + 'pdf/' + lesson.pdf;
-  document.getElementById('bmodal-pdf-btn').href = pdfUrl;
-  document.getElementById('bmodal-iframe').src = pdfUrl;
+  const dlBtn = document.getElementById('bmodal-download-btn');
+  dlBtn.href = pdfUrl;
+  dlBtn.download = lesson.pdf;
+  dlBtn.textContent = '📄 Descargar PDF';
+  dlBtn.className = 'bmodal-btn pdf';
 
+  document.getElementById('bmodal-iframe').src = pdfUrl;
   document.getElementById('bosquejo-overlay').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
 
-function downloadBosquejoPPT(type) {
+function openBosquejoPPT(type) {
   const isAdultos = type === 'adultos';
   const lesson = isAdultos ? getCurrentLesson(ADULTOS_LESSONS) : getCurrentLesson(JOVENES_LESSONS);
   if (!lesson.ppt) return;
-  const base = './bosquejos/adultos/ppt/';
-  const a = document.createElement('a');
-  a.href = base + lesson.ppt;
-  a.download = lesson.ppt;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
+
+  document.getElementById('bmodal-badge').textContent = `${isAdultos ? 'Adultos' : 'Jóvenes'} · ${lesson.trimLabel}`;
+  document.getElementById('bmodal-title').textContent = `Lección ${lesson.num} · ${lesson.title}`;
+  document.getElementById('bmodal-date').textContent = `Semana del ${formatWeekRange(lesson.sabbath)}`;
+
+  const pptRelUrl = `/bosquejos/adultos/ppt/${lesson.ppt}`;
+  const pptFullUrl = SITE_URL + pptRelUrl;
+  const viewerUrl = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(pptFullUrl)}`;
+
+  const dlBtn = document.getElementById('bmodal-download-btn');
+  dlBtn.href = pptRelUrl;
+  dlBtn.download = lesson.ppt;
+  dlBtn.textContent = '📊 Descargar PPT';
+  dlBtn.className = 'bmodal-btn ppt';
+
+  document.getElementById('bmodal-iframe').src = viewerUrl;
+  document.getElementById('bosquejo-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
 }
 
 function initBosquejoBtns() {
