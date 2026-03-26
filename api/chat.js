@@ -3,6 +3,15 @@ import Anthropic from "@anthropic-ai/sdk";
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 export default async function handler(req, res) {
+  // CORS headers
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+
+  if (req.method === "OPTIONS") {
+    return res.status(204).end();
+  }
+
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
@@ -15,16 +24,19 @@ export default async function handler(req, res) {
 
   try {
     const response = await client.messages.create({
-      model: "claude-sonnet-4-6",
-      max_tokens: 600,
+      model: "claude-3-5-sonnet-20241022",
+      max_tokens: 700,
       system: system || "Eres un consejero espiritual cristiano sabio y empático.",
-      messages: messages.slice(-10), // Keep last 10 messages for context
+      messages: messages.slice(-10),
     });
 
     const reply = response.content[0]?.text || "";
     return res.status(200).json({ reply });
   } catch (error) {
-    console.error("Anthropic API error:", error);
-    return res.status(500).json({ error: "Error al procesar tu mensaje" });
+    console.error("Anthropic API error:", error.message, error.status);
+    return res.status(500).json({
+      error: "Error al procesar tu mensaje",
+      detail: error.message,
+    });
   }
 }
