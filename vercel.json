@@ -1,0 +1,20 @@
+{
+  "version": 2,
+  "buildCommand": "npm install",
+  "outputDirectory": "public",
+  "functions": {
+    "api/chat.js": {
+      "maxDuration": 60
+    }
+  },
+  "routes": [
+    {
+      "src": "/api/chat",
+      "dest": "/api/chat.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ]
+}

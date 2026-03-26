@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Una Promesa de Dios para Ti</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <!-- Marked.js para renderizar Markdown en las respuestas del consejero -->
+  <script src="https://cdn.jsdelivr.net/npm/marked@9/marked.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold: #c9a84c;
+      --gold-light: #e8c97a;
+      --deep: #1a1033;
+      --mid: #2d1f5e;
+      --soft: #3d2a7a;
+      --text: #f0eaf8;
+      --muted: rgba(240,234,248,0.65);
+      --card: rgba(255,255,255,0.06);
+      --border: rgba(201,168,76,0.25);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--deep);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── Background ── */
+    .bg {
+      position: fixed; inset: 0; z-index: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, #3d1f7a 0%, #1a1033 55%, #0d0820 100%);
+    }
+    .bg::after {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        radial-gradient(circle at 20% 30%, rgba(201,168,76,0.08) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(100,60,200,0.15) 0%, transparent 50%);
+    }
+    .stars {
+      position: fixed; inset: 0; z-index: 0;
+      background-image:
+        radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,0.6) 0%, transparent 100%),
+        radial-gradient(1px 1px at 25% 40%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 45% 10%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 65% 25%, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 80% 8%, rgba(255,255,255,0.6) 0%, transparent 100%),
+        radial-gradient(1px 1px at 90% 45%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 35% 60%, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 55% 75%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 15% 80%, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 70% 90%, rgba(255,255,255,0.4) 0%, transparent 100%);
+    }
+
+    /* ── Layout ── */
+    .app { position: relative; z-index: 1; max-width: 700px; margin: 0 auto; padding: 2rem 1.2rem 4rem; }
+
+    /* ── Header ── */
+    header { text-align: center; padding: 3rem 0 2.5rem; }
+    .cross {
+      display: inline-block;
+      font-size: 2.2rem;
+      color: var(--gold);
+      margin-bottom: 1rem;
+      filter: drop-shadow(0 0 12px rgba(201,168,76,0.5));
+      animation: glow 3s ease-in-out infinite alternate;
+    }
+    @keyframes glow {
+      from { filter: drop-shadow(0 0 8px rgba(201,168,76,0.4)); }
+      to   { filter: drop-shadow(0 0 20px rgba(201,168,76,0.8)); }
+    }
+    header h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 6vw, 2.8rem);
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      line-height: 1.2;
+      background: linear-gradient(135deg, #e8c97a, #fff5d6, #c9a84c);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    header p {
+      margin-top: 0.6rem;
+      font-size: 0.9rem;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    /* ── Date badge ── */
+    .date-badge {
+      display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+      margin: 0 auto 1.8rem;
+      width: fit-content;
+      padding: 0.45rem 1.2rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(201,168,76,0.08);
+      font-size: 0.82rem;
+      color: var(--gold-light);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    /* ── Promise Card ── */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2rem 2rem 1.8rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.07);
+      transition: all 0.4s ease;
+    }
+
+    .card-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.35rem, 4vw, 1.7rem);
+      font-weight: 600;
+      color: var(--gold-light);
+      line-height: 1.3;
+      margin-bottom: 1.4rem;
+    }
+
+    .verse-block {
+      position: relative;
+      background: rgba(201,168,76,0.07);
+      border-left: 3px solid var(--gold);
+      border-radius: 0 12px 12px 0;
+      padding: 1rem 1.2rem;
+      margin-bottom: 1.4rem;
+    }
+    .verse-block::before {
+      content: '\201C';
+      position: absolute; top: -8px; left: 8px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3rem; line-height: 1;
+      color: var(--gold);
+      opacity: 0.5;
+    }
+    .verse-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15rem;
+      font-style: italic;
+      line-height: 1.6;
+      color: var(--text);
+    }
+
+    .body-text {
+      font-size: 0.92rem;
+      line-height: 1.75;
+      color: var(--muted);
+    }
+    .body-text p { margin-bottom: 0.9rem; }
+
+    .accion-block, .oracion-block {
+      margin-top: 1.4rem;
+      padding: 1rem 1.2rem;
+      border-radius: 12px;
+      font-size: 0.88rem;
+      line-height: 1.65;
+    }
+    .accion-block {
+      background: rgba(100,60,200,0.15);
+      border: 1px solid rgba(100,60,200,0.25);
+    }
+    .accion-block strong, .oracion-block strong {
+      display: block; margin-bottom: 0.3rem;
+      font-size: 0.78rem; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--gold);
+    }
+    .oracion-block {
+      background: rgba(201,168,76,0.06);
+      border: 1px solid var(--border);
+      font-style: italic;
+      color: var(--muted);
+    }
+
+    /* ── No promise ── */
+    .no-promise {
+      text-align: center;
+      padding: 3rem 1.5rem;
+    }
+    .no-promise .icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.5; }
+    .no-promise h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem; color: var(--gold-light); margin-bottom: 0.5rem;
+    }
+    .no-promise p { font-size: 0.88rem; color: var(--muted); }
+
+    /* ── Divider ── */
+    .divider {
+      display: flex; align-items: center; gap: 1rem;
+      margin: 2rem 0;
+      color: var(--muted);
+      font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase;
+    }
+    .divider::before, .divider::after {
+      content: ''; flex: 1;
+      height: 1px; background: var(--border);
+    }
+
+    /* ── Chat ── */
+    #chat-section { margin-top: 0.5rem; }
+    .chat-intro {
+      font-size: 0.88rem; color: var(--muted);
+      text-align: center; margin-bottom: 1.2rem;
+    }
+
+    #messages {
+      display: flex; flex-direction: column; gap: 0.9rem;
+      max-height: 420px; overflow-y: auto;
+      padding: 0.3rem 0.2rem;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(201,168,76,0.2) transparent;
+    }
+    #messages::-webkit-scrollbar { width: 4px; }
+    #messages::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.2); border-radius: 4px; }
+
+    .msg {
+      max-width: 88%;
+      padding: 0.75rem 1rem;
+      border-radius: 16px;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      animation: fadeUp 0.25s ease;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .msg.user {
+      align-self: flex-end;
+      background: linear-gradient(135deg, rgba(100,60,200,0.5), rgba(60,30,150,0.5));
+      border: 1px solid rgba(100,60,200,0.35);
+      color: var(--text);
+    }
+    .msg.assistant {
+      align-self: flex-start;
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+    .msg.assistant .label {
+      font-size: 0.72rem; color: var(--gold); letter-spacing: 0.08em;
+      text-transform: uppercase; margin-bottom: 0.35rem;
+    }
+    .msg.typing {
+      align-self: flex-start;
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 0.9rem 1.2rem;
+    }
+    .typing-dots span {
+      display: inline-block; width: 6px; height: 6px;
+      background: var(--gold); border-radius: 50%; margin: 0 2px;
+      animation: bounce 1.2s ease infinite;
+    }
+    .typing-dots span:nth-child(2) { animation-delay: 0.15s; }
+    .typing-dots span:nth-child(3) { animation-delay: 0.3s; }
+    @keyframes bounce {
+      0%,60%,100% { transform: translateY(0); }
+      30% { transform: translateY(-6px); }
+    }
+
+    /* ── Input area ── */
+    .input-area {
+      display: flex; gap: 0.6rem;
+      margin-top: 1rem;
+    }
+    #user-input {
+      flex: 1;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.75rem 1rem;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      resize: none; outline: none;
+      transition: border-color 0.2s;
+    }
+    #user-input::placeholder { color: rgba(240,234,248,0.3); }
+    #user-input:focus { border-color: rgba(201,168,76,0.5); }
+
+    #send-btn {
+      width: 44px; height: 44px; flex-shrink: 0;
+      background: linear-gradient(135deg, var(--gold), #a87f30);
+      border: none; border-radius: 12px;
+      cursor: pointer; color: var(--deep);
+      font-size: 1.1rem; display: flex; align-items: center; justify-content: center;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 4px 12px rgba(201,168,76,0.3);
+    }
+    #send-btn:hover { transform: scale(1.05); box-shadow: 0 6px 18px rgba(201,168,76,0.4); }
+    #send-btn:active { transform: scale(0.97); }
+    #send-btn:disabled { opacity: 0.5; cursor: default; transform: none; }
+
+    .quick-btns {
+      display: flex; flex-wrap: wrap; gap: 0.5rem;
+      margin-top: 0.8rem;
+    }
+    .quick-btn {
+      padding: 0.4rem 0.9rem;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 0.78rem; cursor: pointer;
+      transition: all 0.15s;
+    }
+    .quick-btn:hover {
+      background: rgba(201,168,76,0.1);
+      border-color: rgba(201,168,76,0.4);
+      color: var(--gold-light);
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      font-size: 0.75rem; color: rgba(240,234,248,0.3);
+    }
+    footer .author {
+      color: rgba(201,168,76,0.55);
+      font-size: 0.78rem;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.35rem;
+    }
+
+    /* ── Author badge in header ── */
+    .author-badge {
+      display: inline-block;
+      margin-top: 0.7rem;
+      padding: 0.3rem 1rem;
+      border-radius: 999px;
+      border: 1px solid rgba(201,168,76,0.2);
+      background: rgba(201,168,76,0.06);
+      font-size: 0.75rem;
+      color: rgba(201,168,76,0.7);
+      letter-spacing: 0.06em;
+    }
+
+    /* ── Markdown dentro del consejero ── */
+    .msg.assistant .md-content h1,
+    .msg.assistant .md-content h2,
+    .msg.assistant .md-content h3 {
+      font-family: 'Cormorant Garamond', serif;
+      color: var(--gold-light);
+      margin: 0.8rem 0 0.4rem;
+      font-size: 1.05rem;
+      font-weight: 600;
+    }
+    .msg.assistant .md-content h1 { font-size: 1.15rem; }
+    .msg.assistant .md-content p { margin-bottom: 0.6rem; }
+    .msg.assistant .md-content p:last-child { margin-bottom: 0; }
+    .msg.assistant .md-content strong { color: var(--gold-light); font-weight: 600; }
+    .msg.assistant .md-content em { font-style: italic; color: var(--muted); }
+    .msg.assistant .md-content blockquote {
+      border-left: 2px solid var(--gold);
+      padding: 0.4rem 0.8rem;
+      margin: 0.6rem 0;
+      background: rgba(201,168,76,0.06);
+      border-radius: 0 8px 8px 0;
+      font-style: italic;
+      color: var(--muted);
+    }
+    .msg.assistant .md-content ul,
+    .msg.assistant .md-content ol {
+      padding-left: 1.4rem;
+      margin: 0.4rem 0 0.6rem;
+    }
+    .msg.assistant .md-content li { margin-bottom: 0.25rem; }
+    .msg.assistant .md-content hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0.8rem 0;
+    }
+    .msg.assistant .md-content code {
+      background: rgba(255,255,255,0.07);
+      padding: 0.1em 0.4em;
+      border-radius: 4px;
+      font-size: 0.85em;
+    }
+
+    /* ── Estado "pensando" con texto animado ── */
+    .thinking-text {
+      font-size: 0.8rem;
+      color: var(--gold);
+      letter-spacing: 0.05em;
+      margin-top: 0.4rem;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 500px) {
+      .card { padding: 1.5rem 1.2rem; }
+      .app { padding: 1.5rem 1rem 3rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="stars"></div>
+
+<div class="app">
+  <header>
+    <div class="cross">✦</div>
+    <h1>Una Promesa de Dios<br>para Ti</h1>
+    <p>Devocional diario · 2026</p>
+    <div class="author-badge">Dr. Tito Goicochea M. · NEED DSA</div>
+  </header>
+
+  <div class="date-badge" id="date-badge">
+    <span>📅</span>
+    <span id="today-label">Cargando...</span>
+  </div>
+
+  <!-- Promise Card -->
+  <div class="card" id="promise-card">
+    <div class="no-promise">
+      <div class="icon">✦</div>
+      <h3>Cargando tu promesa...</h3>
+    </div>
+  </div>
+
+  <!-- Chat -->
+  <div class="divider">Conversa con tu consejero</div>
+
+  <section id="chat-section">
+    <p class="chat-intro">¿Tienes alguna duda sobre esta promesa o necesitas consejo? Estoy aquí para ti.</p>
+    <div id="messages"></div>
+    <div class="input-area">
+      <textarea id="user-input" rows="1" placeholder="Escribe tu pregunta o inquietud…"></textarea>
+      <button id="send-btn" title="Enviar">➤</button>
+    </div>
+    <div class="quick-btns" id="quick-btns">
+      <button class="quick-btn" onclick="quickSend('¿Puedes explicarme más sobre este versículo?')">Explicar el versículo</button>
+      <button class="quick-btn" onclick="quickSend('¿Cómo puedo aplicar esta promesa en mi vida hoy?')">Cómo aplicarla</button>
+      <button class="quick-btn" onclick="quickSend('Necesito ánimo, estoy pasando por un momento difícil')">Necesito ánimo</button>
+      <button class="quick-btn" onclick="quickSend('¿Hay otros versículos relacionados con esta promesa?')">Versículos relacionados</button>
+    </div>
+  </section>
+
+  <footer>
+    <p class="author">✦ Dr. Tito Goicochea M. · NEED DSA ✦</p>
+    <p>Hecho con ❤️ para tu crecimiento espiritual</p>
+  </footer>
+</div>
+
+<script>
+// ─── Data & State ───────────────────────────────────────────────
+let promesas = {};
+let todayPromise = null;
+let chatHistory = [];
+
+const MONTHS_ES = ['enero','febrero','marzo','abril','mayo','junio',
+                   'julio','agosto','septiembre','octubre','noviembre','diciembre'];
+
+function getTodayKey() {
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = String(now.getMonth() + 1).padStart(2, '0');
+  const d = String(now.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
+function formatDate(key) {
+  const [y, m, d] = key.split('-');
+  const month = MONTHS_ES[parseInt(m) - 1];
+  return `${parseInt(d)} de ${month.charAt(0).toUpperCase() + month.slice(1)} de ${y}`;
+}
+
+// ─── Load Promises ───────────────────────────────────────────────
+async function loadPromesas() {
+  try {
+    const res = await fetch('./promesas.json');
+    promesas = await res.json();
+    renderToday();
+  } catch (e) {
+    showError('No se pudieron cargar las promesas. Por favor recarga la página.');
+  }
+}
+
+function renderToday() {
+  const key = getTodayKey();
+  document.getElementById('today-label').textContent = formatDate(key);
+  todayPromise = promesas[key] || null;
+
+  const card = document.getElementById('promise-card');
+
+  if (!todayPromise) {
+    card.innerHTML = `
+      <div class="no-promise">
+        <div class="icon">🌿</div>
+        <h3>La promesa de hoy está en camino</h3>
+        <p>El devocional para este día aún no ha sido publicado.<br>
+           Puedes pedirme una promesa aleatoria o hacerme tus preguntas.</p>
+      </div>`;
+    addMessage('assistant', `¡Hola! Bienvenido a <em>Una Promesa de Dios para Ti</em>.
+      Aunque la promesa para el ${formatDate(key)} aún no está disponible,
+      puedo compartirte reflexiones bíblicas, darte ánimo o responder tus preguntas.
+      ¿En qué puedo ayudarte hoy?`);
+    return;
+  }
+
+  // Build verse: remove surrounding quotes for clean display
+  const verseClean = todayPromise.verse.replace(/^[«""]|[»""]$/g, '');
+
+  // Split body into paragraphs
+  const bodyParas = todayPromise.body.split('\n\n')
+    .filter(p => p.trim())
+    .map(p => `<p>${p.trim()}</p>`)
+    .join('');
+
+  // Clean accion/oracion
+  const accionText = todayPromise.accion.replace(/^Acción del día:\s*/i, '');
+  const oracionText = todayPromise.oracion.replace(/^Tu oración:\s*/i, '');
+
+  card.innerHTML = `
+    <div class="card-title">${todayPromise.title}</div>
+    <div class="verse-block">
+      <div class="verse-text">${verseClean}</div>
+    </div>
+    <div class="body-text">${bodyParas}</div>
+    ${accionText ? `<div class="accion-block"><strong>✦ Acción del día</strong>${accionText}</div>` : ''}
+    ${oracionText ? `<div class="oracion-block"><strong>🙏 Tu oración</strong>${oracionText}</div>` : ''}
+  `;
+
+  // Welcome message from the assistant
+  addMessage('assistant', `¡Que esta promesa ilumine tu día!
+    <em>"${verseClean.split('.')[0]}…"</em><br><br>
+    ¿Tienes alguna duda sobre esta promesa o necesitas un consejo para aplicarla en tu vida?`);
+}
+
+// ─── Chat ────────────────────────────────────────────────────────
+function getSystemPrompt() {
+  const key = getTodayKey();
+  const p = todayPromise;
+  const context = p
+    ? `La promesa del día de hoy (${p.date}) es:
+Título: ${p.title}
+Versículo: ${p.verse}
+Mensaje devocional: ${p.body}
+Acción del día: ${p.accion}
+Oración: ${p.oracion}`
+    : `Hoy no hay promesa disponible para ${formatDate(key)}.`;
+
+  return `Eres el Consejero Espiritual de la app "Una Promesa de Dios para Ti", creada por el Dr. Tito Goicochea M. (NEED DSA).
+Eres sabio, cálido, empático y profundamente bíblico. Tu misión es acompañar al usuario en su camino espiritual.
+
+${context}
+
+INSTRUCCIONES IMPORTANTES:
+- Responde SIEMPRE en español, con calidez y amor cristiano
+- Ancla CADA respuesta en la promesa bíblica del día y en la Palabra de Dios
+- Si el usuario comparte una preocupación o dolor, primero escúchalo con compasión, luego aconseja
+- Usa formato Markdown para estructurar bien tu respuesta (títulos, negritas, citas bíblicas con >)
+- Sé profundo pero conciso — máximo 3-4 secciones cortas por respuesta
+- Puedes citar versículos relacionados para enriquecer el consejo
+- Cierra siempre con una pregunta de reflexión o una invitación a seguir conversando
+- Si alguien expresa pensamientos de hacerse daño, recomiéndale con amor buscar ayuda profesional
+- NO hagas afirmaciones médicas, legales ni financieras
+- Usa emojis con moderación (🙏 📖 ✨) para dar calidez sin exagerar`;
+}
+
+async function sendMessage() {
+  const input = document.getElementById('user-input');
+  const text = input.value.trim();
+  if (!text) return;
+
+  input.value = '';
+  input.style.height = 'auto';
+  addMessage('user', text);
+
+  chatHistory.push({ role: 'user', content: text });
+
+  const btn = document.getElementById('send-btn');
+  btn.disabled = true;
+
+  // Show typing indicator with encouraging text
+  const typingId = 'typing-' + Date.now();
+  const msgDiv = document.createElement('div');
+  msgDiv.className = 'msg typing';
+  msgDiv.id = typingId;
+  const thinkingPhrases = [
+    'El consejero está reflexionando…',
+    'Buscando en la Palabra…',
+    'Preparando una respuesta para ti…',
+    'Meditando en la promesa del día…'
+  ];
+  const phrase = thinkingPhrases[Math.floor(Math.random() * thinkingPhrases.length)];
+  msgDiv.innerHTML = `
+    <div class="typing-dots"><span></span><span></span><span></span></div>
+    <div class="thinking-text">${phrase}</div>
+  `;
+  document.getElementById('messages').appendChild(msgDiv);
+  scrollMessages();
+
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        system: getSystemPrompt(),
+        messages: chatHistory
+      })
+    });
+
+    const data = await res.json();
+    document.getElementById(typingId)?.remove();
+
+    if (data.reply) {
+      chatHistory.push({ role: 'assistant', content: data.reply });
+      addMessage('assistant', data.reply);
+    } else {
+      addMessage('assistant', 'Lo siento, tuve un problema al responder. Por favor intenta de nuevo.');
+    }
+  } catch (e) {
+    document.getElementById(typingId)?.remove();
+    addMessage('assistant', 'No pude conectarme en este momento. Verifica tu conexión e intenta de nuevo.');
+  }
+
+  btn.disabled = false;
+}
+
+function quickSend(text) {
+  document.getElementById('user-input').value = text;
+  sendMessage();
+}
+
+function addMessage(role, html) {
+  const div = document.createElement('div');
+  div.className = `msg ${role}`;
+  if (role === 'assistant') {
+    // Renderizar Markdown si marked.js está disponible
+    let rendered = html;
+    if (typeof marked !== 'undefined') {
+      try {
+        rendered = marked.parse(html, { breaks: true, gfm: true });
+      } catch(e) { rendered = html; }
+    }
+    div.innerHTML = `<div class="label">✦ Consejero Espiritual</div><div class="md-content">${rendered}</div>`;
+  } else {
+    // Mensaje del usuario: escapar HTML por seguridad
+    const safe = html.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    div.innerHTML = safe;
+  }
+  document.getElementById('messages').appendChild(div);
+  scrollMessages();
+}
+
+function scrollMessages() {
+  const el = document.getElementById('messages');
+  el.scrollTop = el.scrollHeight;
+}
+
+function showError(msg) {
+  document.getElementById('promise-card').innerHTML = `
+    <div class="no-promise">
+      <div class="icon">⚠️</div>
+      <h3>Error</h3><p>${msg}</p>
+    </div>`;
+}
+
+// ─── Event Listeners ─────────────────────────────────────────────
+document.getElementById('send-btn').addEventListener('click', sendMessage);
+document.getElementById('user-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+});
+
+// Auto-resize textarea
+document.getElementById('user-input').addEventListener('input', function() {
+  this.style.height = 'auto';
+  this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+});
+
+// ─── Init ────────────────────────────────────────────────────────
+loadPromesas();
+</script>
+</body>
+</html>
