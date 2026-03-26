@@ -508,6 +508,7 @@
       position: absolute; inset: 0;
       background: linear-gradient(135deg, rgba(201,168,76,0.05) 0%, transparent 60%);
       opacity: 0; transition: opacity 0.2s;
+      pointer-events: none;
     }
     .bosquejo-card:hover::before { opacity: 1; }
     .bosquejo-card:hover {
@@ -539,6 +540,7 @@
     }
     .bcard-actions {
       display: flex; gap: 0.5rem; margin-top: 0.7rem; flex-wrap: wrap;
+      position: relative; z-index: 1;
     }
     .bcard-btn {
       flex: 1; min-width: 110px;
