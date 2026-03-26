@@ -6,7 +6,6 @@
   <title>Una Promesa de Dios para Ti</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <!-- Marked.js para renderizar Markdown en las respuestas del consejero -->
   <script src="https://cdn.jsdelivr.net/npm/marked@9/marked.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -60,16 +59,22 @@
         radial-gradient(1px 1px at 70% 90%, rgba(255,255,255,0.4) 0%, transparent 100%);
     }
 
-    /* ── Layout ── */
-    .app { position: relative; z-index: 1; max-width: 700px; margin: 0 auto; padding: 2rem 1.2rem 4rem; }
+    /* ── Page wrapper ── */
+    .page-wrapper {
+      position: relative; z-index: 1;
+      max-width: 1200px; margin: 0 auto;
+      padding: 0 1.5rem 3rem;
+    }
 
     /* ── Header ── */
-    header { text-align: center; padding: 3rem 0 2.5rem; }
+    header {
+      text-align: center;
+      padding: 2.5rem 0 1.8rem;
+    }
     .cross {
       display: inline-block;
-      font-size: 2.2rem;
-      color: var(--gold);
-      margin-bottom: 1rem;
+      font-size: 2rem; color: var(--gold);
+      margin-bottom: 0.8rem;
       filter: drop-shadow(0 0 12px rgba(201,168,76,0.5));
       animation: glow 3s ease-in-out infinite alternate;
     }
@@ -79,7 +84,7 @@
     }
     header h1 {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2rem, 6vw, 2.8rem);
+      font-size: clamp(1.8rem, 5vw, 2.6rem);
       font-weight: 600;
       letter-spacing: 0.02em;
       line-height: 1.2;
@@ -89,23 +94,124 @@
       background-clip: text;
     }
     header p {
-      margin-top: 0.6rem;
-      font-size: 0.9rem;
+      margin-top: 0.4rem;
+      font-size: 0.82rem;
       color: var(--muted);
       letter-spacing: 0.05em;
       text-transform: uppercase;
     }
 
+    /* ── Main 3-column grid ── */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 210px 1fr 370px;
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    /* ── Author Sidebar (left) ── */
+    .author-sidebar {
+      position: sticky;
+      top: 1.5rem;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2rem 1.2rem 1.6rem;
+      text-align: center;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+    }
+
+    .author-photo-wrap {
+      width: 110px; height: 110px;
+      margin: 0 auto 1.1rem;
+      border-radius: 50%;
+      border: 2px solid var(--gold);
+      background: linear-gradient(135deg, var(--mid), var(--soft));
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+      box-shadow: 0 0 24px rgba(201,168,76,0.35), 0 4px 16px rgba(0,0,0,0.4);
+    }
+    .author-photo-wrap img {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+    .author-initials {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.2rem; font-weight: 600;
+      color: var(--gold-light);
+      line-height: 1;
+    }
+
+    .author-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem; font-weight: 600;
+      color: var(--gold-light);
+      line-height: 1.35;
+      margin-bottom: 0.25rem;
+    }
+    .author-org {
+      font-size: 0.7rem; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--muted);
+      margin-bottom: 1.5rem;
+      padding: 0.25rem 0.8rem;
+      border-radius: 999px;
+      border: 1px solid rgba(201,168,76,0.15);
+      background: rgba(201,168,76,0.05);
+      display: inline-block;
+    }
+
+    .social-divider {
+      font-size: 0.65rem; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--muted);
+      margin-bottom: 0.8rem;
+      opacity: 0.6;
+    }
+
+    .social-links {
+      display: flex; flex-direction: column; gap: 0.55rem;
+    }
+    .social-link {
+      display: flex; align-items: center; gap: 0.7rem;
+      padding: 0.55rem 0.9rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+      color: var(--muted); font-size: 0.82rem;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .social-link:hover {
+      border-color: rgba(201,168,76,0.4);
+      background: rgba(201,168,76,0.08);
+      color: var(--gold-light);
+      transform: translateX(3px);
+    }
+    .social-link .s-icon {
+      width: 22px; height: 22px;
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.95rem; flex-shrink: 0;
+    }
+    .social-link.fb   .s-icon { background: rgba(24,119,242,0.2); }
+    .social-link.li   .s-icon { background: rgba(10,102,194,0.2); }
+    .social-link.ig   .s-icon { background: rgba(228,64,95,0.2); }
+    .social-link.tt   .s-icon { background: rgba(255,0,80,0.15); }
+    .social-link .s-label { font-size: 0.8rem; }
+
+    /* ── Promise area (center) ── */
+    .promise-area {}
+
     /* ── Date badge ── */
     .date-badge {
       display: flex; align-items: center; justify-content: center; gap: 0.5rem;
-      margin: 0 auto 1.8rem;
+      margin-bottom: 1.2rem;
       width: fit-content;
-      padding: 0.45rem 1.2rem;
+      padding: 0.4rem 1.1rem;
       border-radius: 999px;
       border: 1px solid var(--border);
       background: rgba(201,168,76,0.08);
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       color: var(--gold-light);
       letter-spacing: 0.06em;
       text-transform: uppercase;
@@ -116,59 +222,46 @@
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 20px;
-      padding: 2rem 2rem 1.8rem;
+      padding: 1.8rem 1.8rem 1.6rem;
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       box-shadow: 0 8px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.07);
-      transition: all 0.4s ease;
     }
-
     .card-title {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(1.35rem, 4vw, 1.7rem);
+      font-size: clamp(1.25rem, 3vw, 1.55rem);
       font-weight: 600;
       color: var(--gold-light);
       line-height: 1.3;
-      margin-bottom: 1.4rem;
+      margin-bottom: 1.2rem;
     }
-
     .verse-block {
       position: relative;
       background: rgba(201,168,76,0.07);
       border-left: 3px solid var(--gold);
       border-radius: 0 12px 12px 0;
       padding: 1rem 1.2rem;
-      margin-bottom: 1.4rem;
+      margin-bottom: 1.2rem;
     }
     .verse-block::before {
       content: '\201C';
       position: absolute; top: -8px; left: 8px;
       font-family: 'Cormorant Garamond', serif;
       font-size: 3rem; line-height: 1;
-      color: var(--gold);
-      opacity: 0.5;
+      color: var(--gold); opacity: 0.5;
     }
     .verse-text {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 1.15rem;
-      font-style: italic;
-      line-height: 1.6;
-      color: var(--text);
+      font-size: 1.1rem; font-style: italic;
+      line-height: 1.6; color: var(--text);
     }
-
     .body-text {
-      font-size: 0.92rem;
-      line-height: 1.75;
-      color: var(--muted);
+      font-size: 0.88rem; line-height: 1.75; color: var(--muted);
     }
-    .body-text p { margin-bottom: 0.9rem; }
-
+    .body-text p { margin-bottom: 0.8rem; }
     .accion-block, .oracion-block {
-      margin-top: 1.4rem;
-      padding: 1rem 1.2rem;
-      border-radius: 12px;
-      font-size: 0.88rem;
-      line-height: 1.65;
+      margin-top: 1.2rem; padding: 0.9rem 1.1rem;
+      border-radius: 12px; font-size: 0.85rem; line-height: 1.65;
     }
     .accion-block {
       background: rgba(100,60,200,0.15);
@@ -176,21 +269,17 @@
     }
     .accion-block strong, .oracion-block strong {
       display: block; margin-bottom: 0.3rem;
-      font-size: 0.78rem; letter-spacing: 0.08em;
+      font-size: 0.75rem; letter-spacing: 0.08em;
       text-transform: uppercase; color: var(--gold);
     }
     .oracion-block {
       background: rgba(201,168,76,0.06);
       border: 1px solid var(--border);
-      font-style: italic;
-      color: var(--muted);
+      font-style: italic; color: var(--muted);
     }
 
     /* ── No promise ── */
-    .no-promise {
-      text-align: center;
-      padding: 3rem 1.5rem;
-    }
+    .no-promise { text-align: center; padding: 2.5rem 1.5rem; }
     .no-promise .icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.5; }
     .no-promise h3 {
       font-family: 'Cormorant Garamond', serif;
@@ -198,29 +287,44 @@
     }
     .no-promise p { font-size: 0.88rem; color: var(--muted); }
 
-    /* ── Divider ── */
-    .divider {
-      display: flex; align-items: center; gap: 1rem;
-      margin: 2rem 0;
-      color: var(--muted);
-      font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase;
-    }
-    .divider::before, .divider::after {
-      content: ''; flex: 1;
-      height: 1px; background: var(--border);
+    /* ── Chat Sidebar (right) ── */
+    .chat-sidebar {
+      position: sticky; top: 1.5rem;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 1.5rem 1.3rem 1.3rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+      display: flex; flex-direction: column; gap: 0.85rem;
     }
 
-    /* ── Chat ── */
-    #chat-section { margin-top: 0.5rem; }
-    .chat-intro {
-      font-size: 0.88rem; color: var(--muted);
-      text-align: center; margin-bottom: 1.2rem;
+    .chat-sidebar-header {
+      text-align: center;
+      padding-bottom: 0.85rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .chat-sidebar-header .chat-icon {
+      font-size: 1.6rem; margin-bottom: 0.3rem;
+      display: block;
+      filter: drop-shadow(0 0 8px rgba(201,168,76,0.5));
+    }
+    .chat-sidebar-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem; font-weight: 600;
+      color: var(--gold-light);
+    }
+    .chat-sidebar-sub {
+      font-size: 0.73rem; color: var(--muted);
+      margin-top: 0.2rem;
     }
 
     #messages {
-      display: flex; flex-direction: column; gap: 0.9rem;
-      max-height: 420px; overflow-y: auto;
-      padding: 0.3rem 0.2rem;
+      display: flex; flex-direction: column; gap: 0.8rem;
+      max-height: 380px; min-height: 120px;
+      overflow-y: auto;
+      padding: 0.2rem 0.1rem;
       scrollbar-width: thin;
       scrollbar-color: rgba(201,168,76,0.2) transparent;
     }
@@ -228,15 +332,15 @@
     #messages::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.2); border-radius: 4px; }
 
     .msg {
-      max-width: 88%;
-      padding: 0.75rem 1rem;
-      border-radius: 16px;
-      font-size: 0.9rem;
+      max-width: 95%;
+      padding: 0.7rem 0.9rem;
+      border-radius: 14px;
+      font-size: 0.86rem;
       line-height: 1.6;
       animation: fadeUp 0.25s ease;
     }
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(8px); }
+      from { opacity: 0; transform: translateY(6px); }
       to   { opacity: 1; transform: translateY(0); }
     }
     .msg.user {
@@ -247,22 +351,22 @@
     }
     .msg.assistant {
       align-self: flex-start;
-      background: var(--card);
+      background: rgba(255,255,255,0.05);
       border: 1px solid var(--border);
       color: var(--text);
     }
     .msg.assistant .label {
-      font-size: 0.72rem; color: var(--gold); letter-spacing: 0.08em;
-      text-transform: uppercase; margin-bottom: 0.35rem;
+      font-size: 0.68rem; color: var(--gold); letter-spacing: 0.08em;
+      text-transform: uppercase; margin-bottom: 0.3rem;
     }
     .msg.typing {
       align-self: flex-start;
-      background: var(--card);
+      background: rgba(255,255,255,0.05);
       border: 1px solid var(--border);
-      padding: 0.9rem 1.2rem;
+      padding: 0.85rem 1rem;
     }
     .typing-dots span {
-      display: inline-block; width: 6px; height: 6px;
+      display: inline-block; width: 5px; height: 5px;
       background: var(--gold); border-radius: 50%; margin: 0 2px;
       animation: bounce 1.2s ease infinite;
     }
@@ -270,23 +374,54 @@
     .typing-dots span:nth-child(3) { animation-delay: 0.3s; }
     @keyframes bounce {
       0%,60%,100% { transform: translateY(0); }
-      30% { transform: translateY(-6px); }
+      30% { transform: translateY(-5px); }
+    }
+    .thinking-text {
+      font-size: 0.75rem; color: var(--gold);
+      letter-spacing: 0.04em; margin-top: 0.35rem;
+    }
+
+    /* ── Markdown ── */
+    .msg.assistant .md-content h1,
+    .msg.assistant .md-content h2,
+    .msg.assistant .md-content h3 {
+      font-family: 'Cormorant Garamond', serif;
+      color: var(--gold-light); margin: 0.7rem 0 0.35rem;
+      font-size: 1rem; font-weight: 600;
+    }
+    .msg.assistant .md-content p { margin-bottom: 0.5rem; }
+    .msg.assistant .md-content p:last-child { margin-bottom: 0; }
+    .msg.assistant .md-content strong { color: var(--gold-light); font-weight: 600; }
+    .msg.assistant .md-content em { font-style: italic; color: var(--muted); }
+    .msg.assistant .md-content blockquote {
+      border-left: 2px solid var(--gold); padding: 0.35rem 0.7rem;
+      margin: 0.5rem 0; background: rgba(201,168,76,0.06);
+      border-radius: 0 8px 8px 0; font-style: italic; color: var(--muted);
+    }
+    .msg.assistant .md-content ul,
+    .msg.assistant .md-content ol { padding-left: 1.3rem; margin: 0.35rem 0 0.5rem; }
+    .msg.assistant .md-content li { margin-bottom: 0.2rem; }
+    .msg.assistant .md-content hr {
+      border: none; border-top: 1px solid var(--border); margin: 0.6rem 0;
+    }
+    .msg.assistant .md-content code {
+      background: rgba(255,255,255,0.07); padding: 0.1em 0.35em;
+      border-radius: 4px; font-size: 0.82em;
     }
 
     /* ── Input area ── */
     .input-area {
-      display: flex; gap: 0.6rem;
-      margin-top: 1rem;
+      display: flex; gap: 0.5rem;
     }
     #user-input {
       flex: 1;
       background: rgba(255,255,255,0.05);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 0.75rem 1rem;
+      border-radius: 11px;
+      padding: 0.65rem 0.9rem;
       color: var(--text);
       font-family: 'Inter', sans-serif;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       resize: none; outline: none;
       transition: border-color 0.2s;
     }
@@ -294,117 +429,95 @@
     #user-input:focus { border-color: rgba(201,168,76,0.5); }
 
     #send-btn {
-      width: 44px; height: 44px; flex-shrink: 0;
+      width: 40px; height: 40px; flex-shrink: 0;
       background: linear-gradient(135deg, var(--gold), #a87f30);
-      border: none; border-radius: 12px;
+      border: none; border-radius: 11px;
       cursor: pointer; color: var(--deep);
-      font-size: 1.1rem; display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; display: flex; align-items: center; justify-content: center;
       transition: transform 0.15s, box-shadow 0.15s;
       box-shadow: 0 4px 12px rgba(201,168,76,0.3);
     }
-    #send-btn:hover { transform: scale(1.05); box-shadow: 0 6px 18px rgba(201,168,76,0.4); }
+    #send-btn:hover { transform: scale(1.05); box-shadow: 0 6px 16px rgba(201,168,76,0.4); }
     #send-btn:active { transform: scale(0.97); }
     #send-btn:disabled { opacity: 0.5; cursor: default; transform: none; }
 
     .quick-btns {
-      display: flex; flex-wrap: wrap; gap: 0.5rem;
-      margin-top: 0.8rem;
+      display: flex; flex-direction: column; gap: 0.45rem;
     }
     .quick-btn {
-      padding: 0.4rem 0.9rem;
+      padding: 0.55rem 0.9rem;
       background: rgba(255,255,255,0.04);
       border: 1px solid var(--border);
-      border-radius: 999px;
+      border-radius: 10px;
       color: var(--muted);
       font-size: 0.78rem; cursor: pointer;
+      text-align: left;
       transition: all 0.15s;
+      display: flex; align-items: center; gap: 0.5rem;
     }
     .quick-btn:hover {
       background: rgba(201,168,76,0.1);
       border-color: rgba(201,168,76,0.4);
       color: var(--gold-light);
     }
+    .quick-btn .qicon { font-size: 1rem; }
 
     /* ── Footer ── */
     footer {
       text-align: center;
-      margin-top: 3rem;
-      font-size: 0.75rem; color: rgba(240,234,248,0.3);
+      margin-top: 2.5rem;
+      font-size: 0.73rem; color: rgba(240,234,248,0.3);
     }
     footer .author {
-      color: rgba(201,168,76,0.55);
-      font-size: 0.78rem;
-      letter-spacing: 0.04em;
-      margin-bottom: 0.35rem;
-    }
-
-    /* ── Author badge in header ── */
-    .author-badge {
-      display: inline-block;
-      margin-top: 0.7rem;
-      padding: 0.3rem 1rem;
-      border-radius: 999px;
-      border: 1px solid rgba(201,168,76,0.2);
-      background: rgba(201,168,76,0.06);
+      color: rgba(201,168,76,0.45);
       font-size: 0.75rem;
-      color: rgba(201,168,76,0.7);
-      letter-spacing: 0.06em;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.3rem;
     }
 
-    /* ── Markdown dentro del consejero ── */
-    .msg.assistant .md-content h1,
-    .msg.assistant .md-content h2,
-    .msg.assistant .md-content h3 {
-      font-family: 'Cormorant Garamond', serif;
-      color: var(--gold-light);
-      margin: 0.8rem 0 0.4rem;
-      font-size: 1.05rem;
-      font-weight: 600;
-    }
-    .msg.assistant .md-content h1 { font-size: 1.15rem; }
-    .msg.assistant .md-content p { margin-bottom: 0.6rem; }
-    .msg.assistant .md-content p:last-child { margin-bottom: 0; }
-    .msg.assistant .md-content strong { color: var(--gold-light); font-weight: 600; }
-    .msg.assistant .md-content em { font-style: italic; color: var(--muted); }
-    .msg.assistant .md-content blockquote {
-      border-left: 2px solid var(--gold);
-      padding: 0.4rem 0.8rem;
-      margin: 0.6rem 0;
-      background: rgba(201,168,76,0.06);
-      border-radius: 0 8px 8px 0;
-      font-style: italic;
-      color: var(--muted);
-    }
-    .msg.assistant .md-content ul,
-    .msg.assistant .md-content ol {
-      padding-left: 1.4rem;
-      margin: 0.4rem 0 0.6rem;
-    }
-    .msg.assistant .md-content li { margin-bottom: 0.25rem; }
-    .msg.assistant .md-content hr {
-      border: none;
-      border-top: 1px solid var(--border);
-      margin: 0.8rem 0;
-    }
-    .msg.assistant .md-content code {
-      background: rgba(255,255,255,0.07);
-      padding: 0.1em 0.4em;
-      border-radius: 4px;
-      font-size: 0.85em;
+    /* ── Responsive: Tablet ── */
+    @media (max-width: 950px) {
+      .main-grid {
+        grid-template-columns: 1fr 320px;
+        grid-template-rows: auto auto;
+      }
+      .author-sidebar {
+        grid-column: 1 / -1;
+        display: flex; align-items: center; gap: 1.5rem;
+        text-align: left; padding: 1.2rem 1.5rem;
+        position: static;
+      }
+      .author-photo-wrap { width: 80px; height: 80px; flex-shrink: 0; }
+      .author-initials { font-size: 1.8rem; }
+      .author-info { flex: 1; }
+      .social-links { flex-direction: row; flex-wrap: wrap; gap: 0.4rem; }
+      .social-link { padding: 0.4rem 0.7rem; font-size: 0.75rem; }
+      .s-label { display: none; }
+      .social-link { justify-content: center; }
+      .s-icon { width: 26px; height: 26px; }
+      .author-org { margin-bottom: 0.6rem; }
+      .promise-area { grid-column: 1; }
+      .chat-sidebar { grid-column: 2; position: sticky; }
     }
 
-    /* ── Estado "pensando" con texto animado ── */
-    .thinking-text {
-      font-size: 0.8rem;
-      color: var(--gold);
-      letter-spacing: 0.05em;
-      margin-top: 0.4rem;
+    /* ── Responsive: Mobile ── */
+    @media (max-width: 640px) {
+      .main-grid { grid-template-columns: 1fr; }
+      .author-sidebar {
+        grid-column: 1;
+        flex-direction: column; text-align: center;
+      }
+      .author-info { width: 100%; }
+      .social-links { flex-direction: column; }
+      .s-label { display: inline; }
+      .chat-sidebar { grid-column: 1; position: static; }
+      .promise-area { grid-column: 1; }
     }
 
-    /* ── Responsive ── */
     @media (max-width: 500px) {
-      .card { padding: 1.5rem 1.2rem; }
-      .app { padding: 1.5rem 1rem 3rem; }
+      .page-wrapper { padding: 0 1rem 2rem; }
+      header { padding: 1.8rem 0 1.2rem; }
+      .card { padding: 1.4rem 1.1rem; }
     }
   </style>
 </head>
@@ -412,50 +525,98 @@
 <div class="bg"></div>
 <div class="stars"></div>
 
-<div class="app">
+<div class="page-wrapper">
+
+  <!-- Header -->
   <header>
     <div class="cross">✦</div>
-    <h1>Una Promesa de Dios<br>para Ti</h1>
-    <p>Devocional diario · 2026</p>
-    <div class="author-badge">Dr. Tito Goicochea M. · NEED DSA</div>
+    <h1>Una Promesa de Dios para Ti</h1>
+    <p>Devocional Diario · 2026</p>
   </header>
 
-  <div class="date-badge" id="date-badge">
-    <span>📅</span>
-    <span id="today-label">Cargando...</span>
-  </div>
+  <!-- Main 3-column grid -->
+  <div class="main-grid">
 
-  <!-- Promise Card -->
-  <div class="card" id="promise-card">
-    <div class="no-promise">
-      <div class="icon">✦</div>
-      <h3>Cargando tu promesa...</h3>
-    </div>
-  </div>
+    <!-- ── LEFT: Author Sidebar ── -->
+    <aside class="author-sidebar">
+      <div class="author-photo-wrap" id="author-photo-wrap">
+        <!-- Si hay foto, reemplaza esto con <img src="URL_FOTO" alt="Dr. Tito Goicochea M." /> -->
+        <span class="author-initials">TG</span>
+      </div>
+      <div class="author-info">
+        <div class="author-name">Dr. Tito Goicochea M.</div>
+        <div class="author-org">NEED DSA</div>
 
-  <!-- Chat -->
-  <div class="divider">Conversa con tu consejero</div>
+        <div class="social-divider">Sígueme en</div>
+        <div class="social-links">
+          <a href="https://www.facebook.com/tito.goicochea" target="_blank" rel="noopener" class="social-link fb">
+            <span class="s-icon">📘</span>
+            <span class="s-label">Facebook</span>
+          </a>
+          <a href="https://www.linkedin.com/in/titogoicochea" target="_blank" rel="noopener" class="social-link li">
+            <span class="s-icon">💼</span>
+            <span class="s-label">LinkedIn</span>
+          </a>
+          <a href="https://www.instagram.com/titogoicochea" target="_blank" rel="noopener" class="social-link ig">
+            <span class="s-icon">📷</span>
+            <span class="s-label">Instagram</span>
+          </a>
+          <a href="https://www.tiktok.com/@titogoicochea" target="_blank" rel="noopener" class="social-link tt">
+            <span class="s-icon">🎵</span>
+            <span class="s-label">TikTok</span>
+          </a>
+        </div>
+      </div>
+    </aside>
 
-  <section id="chat-section">
-    <p class="chat-intro">¿Tienes alguna duda sobre esta promesa o necesitas consejo? Estoy aquí para ti.</p>
-    <div id="messages"></div>
-    <div class="input-area">
-      <textarea id="user-input" rows="1" placeholder="Escribe tu pregunta o inquietud…"></textarea>
-      <button id="send-btn" title="Enviar">➤</button>
-    </div>
-    <div class="quick-btns" id="quick-btns">
-      <button class="quick-btn" onclick="quickSend('¿Puedes explicarme más sobre este versículo?')">Explicar el versículo</button>
-      <button class="quick-btn" onclick="quickSend('¿Cómo puedo aplicar esta promesa en mi vida hoy?')">Cómo aplicarla</button>
-      <button class="quick-btn" onclick="quickSend('Necesito ánimo, estoy pasando por un momento difícil')">Necesito ánimo</button>
-      <button class="quick-btn" onclick="quickSend('¿Hay otros versículos relacionados con esta promesa?')">Versículos relacionados</button>
-    </div>
-  </section>
+    <!-- ── CENTER: Promise ── -->
+    <main class="promise-area">
+      <div class="date-badge" id="date-badge">
+        <span>📅</span>
+        <span id="today-label">Cargando...</span>
+      </div>
+
+      <div class="card" id="promise-card">
+        <div class="no-promise">
+          <div class="icon">✦</div>
+          <h3>Cargando tu promesa...</h3>
+        </div>
+      </div>
+    </main>
+
+    <!-- ── RIGHT: Counselor Chat ── -->
+    <aside class="chat-sidebar">
+      <div class="chat-sidebar-header">
+        <span class="chat-icon">🕊️</span>
+        <div class="chat-sidebar-title">Consejero Espiritual</div>
+        <div class="chat-sidebar-sub">Basado en la promesa de hoy</div>
+      </div>
+
+      <div id="messages"></div>
+
+      <div class="input-area">
+        <textarea id="user-input" rows="1" placeholder="Escribe tu pregunta…"></textarea>
+        <button id="send-btn" title="Enviar">➤</button>
+      </div>
+
+      <div class="quick-btns" id="quick-btns">
+        <button class="quick-btn" onclick="quickSend('Necesito ánimo, estoy pasando por un momento difícil')">
+          <span class="qicon">🙏</span> Necesito ánimo
+        </button>
+        <button class="quick-btn" onclick="quickSend('¿Hay otros versículos relacionados con esta promesa?')">
+          <span class="qicon">📖</span> Versículos relacionados
+        </button>
+      </div>
+    </aside>
+
+  </div><!-- /main-grid -->
 
   <footer>
     <p class="author">✦ Dr. Tito Goicochea M. · NEED DSA ✦</p>
     <p>Hecho con ❤️ para tu crecimiento espiritual</p>
   </footer>
-</div>
+
+</div><!-- /page-wrapper -->
 
 <script>
 // ─── Data & State ───────────────────────────────────────────────
@@ -504,7 +665,7 @@ function renderToday() {
         <div class="icon">🌿</div>
         <h3>La promesa de hoy está en camino</h3>
         <p>El devocional para este día aún no ha sido publicado.<br>
-           Puedes pedirme una promesa aleatoria o hacerme tus preguntas.</p>
+           Puedes hacerme tus preguntas de todos modos.</p>
       </div>`;
     addMessage('assistant', `¡Hola! Bienvenido a <em>Una Promesa de Dios para Ti</em>.
       Aunque la promesa para el ${formatDate(key)} aún no está disponible,
@@ -513,16 +674,11 @@ function renderToday() {
     return;
   }
 
-  // Build verse: remove surrounding quotes for clean display
   const verseClean = todayPromise.verse.replace(/^[«""]|[»""]$/g, '');
-
-  // Split body into paragraphs
   const bodyParas = todayPromise.body.split('\n\n')
     .filter(p => p.trim())
     .map(p => `<p>${p.trim()}</p>`)
     .join('');
-
-  // Clean accion/oracion
   const accionText = todayPromise.accion.replace(/^Acción del día:\s*/i, '');
   const oracionText = todayPromise.oracion.replace(/^Tu oración:\s*/i, '');
 
@@ -536,10 +692,9 @@ function renderToday() {
     ${oracionText ? `<div class="oracion-block"><strong>🙏 Tu oración</strong>${oracionText}</div>` : ''}
   `;
 
-  // Welcome message from the assistant
   addMessage('assistant', `¡Que esta promesa ilumine tu día!
     <em>"${verseClean.split('.')[0]}…"</em><br><br>
-    ¿Tienes alguna duda sobre esta promesa o necesitas un consejo para aplicarla en tu vida?`);
+    ¿Tienes alguna duda sobre esta promesa o necesitas consejo para aplicarla en tu vida?`);
 }
 
 // ─── Chat ────────────────────────────────────────────────────────
@@ -581,13 +736,11 @@ async function sendMessage() {
   input.value = '';
   input.style.height = 'auto';
   addMessage('user', text);
-
   chatHistory.push({ role: 'user', content: text });
 
   const btn = document.getElementById('send-btn');
   btn.disabled = true;
 
-  // Show typing indicator with encouraging text
   const typingId = 'typing-' + Date.now();
   const msgDiv = document.createElement('div');
   msgDiv.className = 'msg typing';
@@ -610,15 +763,10 @@ async function sendMessage() {
     const res = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        system: getSystemPrompt(),
-        messages: chatHistory
-      })
+      body: JSON.stringify({ system: getSystemPrompt(), messages: chatHistory })
     });
-
     const data = await res.json();
     document.getElementById(typingId)?.remove();
-
     if (data.reply) {
       chatHistory.push({ role: 'assistant', content: data.reply });
       addMessage('assistant', data.reply);
@@ -642,16 +790,13 @@ function addMessage(role, html) {
   const div = document.createElement('div');
   div.className = `msg ${role}`;
   if (role === 'assistant') {
-    // Renderizar Markdown si marked.js está disponible
     let rendered = html;
     if (typeof marked !== 'undefined') {
-      try {
-        rendered = marked.parse(html, { breaks: true, gfm: true });
-      } catch(e) { rendered = html; }
+      try { rendered = marked.parse(html, { breaks: true, gfm: true }); }
+      catch(e) { rendered = html; }
     }
     div.innerHTML = `<div class="label">✦ Consejero Espiritual</div><div class="md-content">${rendered}</div>`;
   } else {
-    // Mensaje del usuario: escapar HTML por seguridad
     const safe = html.replace(/</g,'&lt;').replace(/>/g,'&gt;');
     div.innerHTML = safe;
   }
@@ -677,8 +822,6 @@ document.getElementById('send-btn').addEventListener('click', sendMessage);
 document.getElementById('user-input').addEventListener('keydown', e => {
   if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
 });
-
-// Auto-resize textarea
 document.getElementById('user-input').addEventListener('input', function() {
   this.style.height = 'auto';
   this.style.height = Math.min(this.scrollHeight, 120) + 'px';
