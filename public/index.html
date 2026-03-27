@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Una Promesa de Dios para Mí</title>
+  <title>Una Promesa de Dios para Ti</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/marked@9/marked.min.js"></script>
@@ -746,7 +746,7 @@
   <!-- Header -->
   <header>
     <div class="cross">✦</div>
-    <h1 id="header-title">Una Promesa de Dios para Mí</h1>
+    <h1 id="header-title">Una Promesa de Dios para Ti</h1>
     <p id="header-subtitle">Devocional Diario · 2026</p>
     <div class="lang-toggle">
       <button class="lang-btn active" data-lang="es" onclick="setLang('es')">🇪🇸 ES</button>
@@ -903,7 +903,7 @@ const MONTHS = {
 
 const LABELS = {
   es: {
-    title:              'Una Promesa de Dios para Mí',
+    title:              'Una Promesa de Dios para Ti',
     subtitle:           'Devocional Diario · 2026',
     loading_promise:    'Cargando tu promesa...',
     promise_coming:     'La promesa de hoy está en camino',
@@ -937,10 +937,10 @@ const LABELS = {
     error_reply:        'Lo siento, tuve un problema al responder. Por favor intenta de nuevo.',
     error_conn:         'No pude conectarme en este momento. Verifica tu conexión e intenta de nuevo.',
     greeting:      (v) => `¡Que esta promesa ilumine tu día! <em>"${v}…"</em><br><br>¿Tienes alguna duda sobre esta promesa o necesitas consejo para aplicarla en tu vida?`,
-    greeting_none: (d) => `¡Hola! Bienvenido a <em>Una Promesa de Dios para Mí</em>. Aunque la promesa para el ${d} aún no está disponible, puedo compartirte reflexiones bíblicas, darte ánimo o responder tus preguntas. ¿En qué puedo ayudarte hoy?`,
+    greeting_none: (d) => `¡Hola! Bienvenido a <em>Una Promesa de Dios para Ti</em>. Aunque la promesa para el ${d} aún no está disponible, puedo compartirte reflexiones bíblicas, darte ánimo o responder tus preguntas. ¿En qué puedo ayudarte hoy?`,
   },
   pt: {
-    title:              'Uma Promessa de Deus para Mim',
+    title:              'Uma Promessa de Deus para Ti',
     subtitle:           'Devocional Diário · 2026',
     loading_promise:    'Carregando sua promessa...',
     promise_coming:     'A promessa de hoje está a caminho',
@@ -974,7 +974,7 @@ const LABELS = {
     error_reply:        'Desculpe, tive um problema ao responder. Por favor, tente novamente.',
     error_conn:         'Não consegui me conectar. Verifique sua conexão e tente novamente.',
     greeting:      (v) => `Que esta promessa ilumine o seu dia! <em>"${v}…"</em><br><br>Tem alguma dúvida sobre esta promessa ou precisa de conselho para aplicá-la em sua vida?`,
-    greeting_none: (d) => `Olá! Bem-vindo a <em>Uma Promessa de Deus para Mim</em>. Embora a promessa para ${d} ainda não esteja disponível, posso compartilhar reflexões bíblicas, dar ânimo ou responder suas perguntas. Em que posso ajudá-lo hoje?`,
+    greeting_none: (d) => `Olá! Bem-vindo a <em>Uma Promessa de Deus para Ti</em>. Embora a promessa para ${d} ainda não esteja disponível, posso compartilhar reflexões bíblicas, dar ânimo ou responder suas perguntas. Em que posso ajudá-lo hoje?`,
   }
 };
 
@@ -1135,13 +1135,13 @@ function getSystemPrompt() {
     const ctx = p
       ? `A promessa do dia de hoje (${p.date}) é:\nTítulo: ${p.title}\nVersículo: ${p.verse}\nMensagem devocional: ${p.body}\nAção do dia: ${p.accion}\nOração: ${p.oracion}`
       : `Hoje não há promessa disponível para ${formatDate(key)}.`;
-    return `Você é o Conselheiro Espiritual do aplicativo "Uma Promessa de Deus para Mim", criado pelo Dr. Tito Goicochea M. (NEED DSA). Você é sábio, caloroso, empático e profundamente bíblico. Sua missão é acompanhar o usuário em sua jornada espiritual.\n\n${ctx}\n\nINSTRUÇÕES IMPORTANTES:\n- Responda SEMPRE em Português do Brasil, com carinho e amor cristão\n- Ancre CADA resposta na promessa bíblica do dia e na Palavra de Deus\n- Se o usuário compartilhar uma preocupação ou dor, primeiro ouça com compaixão, depois aconselhe\n- Use formato Markdown para estruturar bem sua resposta (títulos, negritos, citações bíblicas com >)\n- Seja profundo mas conciso — máximo 3-4 seções curtas por resposta\n- Você pode citar versículos relacionados para enriquecer o conselho\n- Termine sempre com uma pergunta de reflexão ou um convite para continuar conversando\n- Se alguém expressar pensamentos de se machucar, recomende com amor buscar ajuda profissional\n- NÃO faça afirmações médicas, legais ou financeiras\n- Use emojis com moderação (🙏 📖 ✨) para dar calor sem exagerar`;
+    return `Você é o Conselheiro Espiritual do aplicativo "Uma Promessa de Deus para Ti", criado pelo Dr. Tito Goicochea M. (NEED DSA). Você é sábio, caloroso, empático e profundamente bíblico. Sua missão é acompanhar o usuário em sua jornada espiritual.\n\n${ctx}\n\nINSTRUÇÕES IMPORTANTES:\n- Responda SEMPRE em Português do Brasil, com carinho e amor cristão\n- Ancre CADA resposta na promessa bíblica do dia e na Palavra de Deus\n- Se o usuário compartilhar uma preocupação ou dor, primeiro ouça com compaixão, depois aconselhe\n- Use formato Markdown para estruturar bem sua resposta (títulos, negritos, citações bíblicas com >)\n- Seja profundo mas conciso — máximo 3-4 seções curtas por resposta\n- Você pode citar versículos relacionados para enriquecer o conselho\n- Termine sempre com uma pergunta de reflexão ou um convite para continuar conversando\n- Se alguém expressar pensamentos de se machucar, recomende com amor buscar ajuda profissional\n- NÃO faça afirmações médicas, legais ou financeiras\n- Use emojis com moderação (🙏 📖 ✨) para dar calor sem exagerar`;
   }
 
   const ctx = p
     ? `La promesa del día de hoy (${p.date}) es:\nTítulo: ${p.title}\nVersículo: ${p.verse}\nMensaje devocional: ${p.body}\nAcción del día: ${p.accion}\nOración: ${p.oracion}`
     : `Hoy no hay promesa disponible para ${formatDate(key)}.`;
-  return `Eres el Consejero Espiritual de la app "Una Promesa de Dios para Mí", creada por el Dr. Tito Goicochea M. (NEED DSA). Eres sabio, cálido, empático y profundamente bíblico. Tu misión es acompañar al usuario en su camino espiritual.\n\n${ctx}\n\nINSTRUCCIONES IMPORTANTES:\n- Responde SIEMPRE en español, con calidez y amor cristiano\n- Ancla CADA respuesta en la promesa bíblica del día y en la Palabra de Dios\n- Si el usuario comparte una preocupación o dolor, primero escúchalo con compasión, luego aconseja\n- Usa formato Markdown para estructurar bien tu respuesta (títulos, negritas, citas bíblicas con >)\n- Sé profundo pero conciso — máximo 3-4 secciones cortas por respuesta\n- Puedes citar versículos relacionados para enriquecer el consejo\n- Cierra siempre con una pregunta de reflexión o una invitación a seguir conversando\n- Si alguien expresa pensamientos de hacerse daño, recomiéndale con amor buscar ayuda profesional\n- NO hagas afirmaciones médicas, legales ni financieras\n- Usa emojis con moderación (🙏 📖 ✨) para dar calidez sin exagerar`;
+  return `Eres el Consejero Espiritual de la app "Una Promesa de Dios para Ti", creada por el Dr. Tito Goicochea M. (NEED DSA). Eres sabio, cálido, empático y profundamente bíblico. Tu misión es acompañar al usuario en su camino espiritual.\n\n${ctx}\n\nINSTRUCCIONES IMPORTANTES:\n- Responde SIEMPRE en español, con calidez y amor cristiano\n- Ancla CADA respuesta en la promesa bíblica del día y en la Palabra de Dios\n- Si el usuario comparte una preocupación o dolor, primero escúchalo con compasión, luego aconseja\n- Usa formato Markdown para estructurar bien tu respuesta (títulos, negritas, citas bíblicas con >)\n- Sé profundo pero conciso — máximo 3-4 secciones cortas por respuesta\n- Puedes citar versículos relacionados para enriquecer el consejo\n- Cierra siempre con una pregunta de reflexión o una invitación a seguir conversando\n- Si alguien expresa pensamientos de hacerse daño, recomiéndale con amor buscar ayuda profesional\n- NO hagas afirmaciones médicas, legales ni financieras\n- Usa emojis con moderación (🙏 📖 ✨) para dar calidez sin exagerar`;
 }
 
 async function sendMessage() {
@@ -1312,7 +1312,7 @@ function initBosquejos() {
   initBosquejoBtns();
 }
 
-const SITE_URL = 'https://promesa-de-dios-para-mi.vercel.app';
+const SITE_URL = 'https://promesa-de-dios-para-ti.vercel.app';
 
 function openBosquejoPDF(type) {
   const isAdultos = type === 'adultos';
