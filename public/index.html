@@ -637,6 +637,35 @@
     }
     .bmodal-btn.ppt:hover { background: rgba(200,90,30,0.22); }
     .bmodal-btn.ppt.unavailable { opacity: 0.35; cursor: default; pointer-events: none; }
+
+    /* ── Language Toggle ── */
+    .lang-toggle {
+      display: flex; align-items: center; justify-content: center; gap: 0.4rem;
+      margin-top: 0.9rem;
+    }
+    .lang-btn {
+      padding: 0.28rem 0.85rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.76rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 0.04em;
+    }
+    .lang-btn.active {
+      background: rgba(201,168,76,0.15);
+      border-color: rgba(201,168,76,0.5);
+      color: var(--gold-light);
+      font-weight: 500;
+    }
+    .lang-btn:hover:not(.active) {
+      border-color: rgba(201,168,76,0.3);
+      color: var(--text);
+    }
+
     .bmodal-viewer {
       width: 100%; height: 70vh; min-height: 480px;
       background: #fff;
@@ -717,8 +746,12 @@
   <!-- Header -->
   <header>
     <div class="cross">✦</div>
-    <h1>Una Promesa de Dios para Mí</h1>
-    <p>Devocional Diario · 2026</p>
+    <h1 id="header-title">Una Promesa de Dios para Mí</h1>
+    <p id="header-subtitle">Devocional Diario · 2026</p>
+    <div class="lang-toggle">
+      <button class="lang-btn active" data-lang="es" onclick="setLang('es')">🇪🇸 ES</button>
+      <button class="lang-btn" data-lang="pt" onclick="setLang('pt')">🇧🇷 PT</button>
+    </div>
   </header>
 
   <!-- Main 3-column grid -->
@@ -733,7 +766,7 @@
         <div class="author-name">Dr. Tito Goicochea M.</div>
         <div class="author-org">NEED DSA</div>
 
-        <div class="social-divider">Sígueme en</div>
+        <div class="social-divider" id="sigueme-label">Sígueme en</div>
         <div class="social-links">
           <a href="https://www.facebook.com/titogoicocheam/" target="_blank" rel="noopener" class="social-link fb">
             <span class="s-icon"><svg viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></span>
@@ -774,8 +807,8 @@
     <aside class="chat-sidebar">
       <div class="chat-sidebar-header">
         <span class="chat-icon">🕊️</span>
-        <div class="chat-sidebar-title">Consejero Espiritual</div>
-        <div class="chat-sidebar-sub">Basado en la promesa de hoy</div>
+        <div class="chat-sidebar-title" id="counselor-title">Consejero Espiritual</div>
+        <div class="chat-sidebar-sub" id="counselor-sub">Basado en la promesa de hoy</div>
       </div>
 
       <div id="messages"></div>
@@ -786,11 +819,11 @@
       </div>
 
       <div class="quick-btns" id="quick-btns">
-        <button class="quick-btn" onclick="quickSend('Necesito ánimo, estoy pasando por un momento difícil')">
-          <span class="qicon">🙏</span> Necesito ánimo
+        <button class="quick-btn" onclick="quickSendAnimo()">
+          <span class="qicon">🙏</span><span id="quick-animo-label"> Necesito ánimo</span>
         </button>
-        <button class="quick-btn" onclick="quickSend('¿Hay otros versículos relacionados con esta promesa?')">
-          <span class="qicon">📖</span> Versículos relacionados
+        <button class="quick-btn" onclick="quickSendVersiculos()">
+          <span class="qicon">📖</span><span id="quick-versiculos-label"> Versículos relacionados</span>
         </button>
       </div>
     </aside>
@@ -802,7 +835,7 @@
     <div class="bosquejos-header">
       <div class="bsec-icon">📖</div>
       <div>
-        <div class="bosquejos-header-title">Bosquejos de la Lección de Escuela Sabática</div>
+        <div class="bosquejos-header-title" id="bosquejos-title">Bosquejos de la Lección de Escuela Sabática</div>
         <div class="bosquejos-header-sub">Semana del <span id="bosquejo-week-label">...</span></div>
       </div>
     </div>
@@ -810,7 +843,7 @@
       <!-- Adultos -->
       <div class="bosquejo-card" id="card-adultos">
         <div class="bcard-icon">🎓</div>
-        <div class="bcard-badge">Adultos</div>
+        <div class="bcard-badge" id="adultos-badge">Adultos</div>
         <div class="bcard-lesson" id="adultos-lesson-num">Cargando…</div>
         <div class="bcard-title" id="adultos-lesson-title">…</div>
         <div class="bcard-actions">
@@ -821,7 +854,7 @@
       <!-- Jóvenes -->
       <div class="bosquejo-card" id="card-jovenes">
         <div class="bcard-icon">🌟</div>
-        <div class="bcard-badge">Jóvenes</div>
+        <div class="bcard-badge" id="jovenes-badge">Jóvenes</div>
         <div class="bcard-lesson" id="jovenes-lesson-num">Cargando…</div>
         <div class="bcard-title" id="jovenes-lesson-title">…</div>
         <div class="bcard-actions">
@@ -854,19 +887,143 @@
 
   <footer>
     <p class="author">✦ Dr. Tito Goicochea M. · NEED DSA ✦</p>
-    <p>Hecho con ❤️ para tu crecimiento espiritual</p>
+    <p id="footer-msg">Hecho con ❤️ para tu crecimiento espiritual</p>
   </footer>
 
 </div><!-- /page-wrapper -->
 
 <script>
-// ─── Data & State ───────────────────────────────────────────────
+// ─── Idioma & i18n ───────────────────────────────────────────────
+let currentLang = localStorage.getItem('lang') || 'es';
+
+const MONTHS = {
+  es: ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'],
+  pt: ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro']
+};
+
+const LABELS = {
+  es: {
+    title:              'Una Promesa de Dios para Mí',
+    subtitle:           'Devocional Diario · 2026',
+    loading_promise:    'Cargando tu promesa...',
+    promise_coming:     'La promesa de hoy está en camino',
+    promise_not_pub:    'El devocional para este día aún no ha sido publicado.<br>Puedes hacerme tus preguntas de todos modos.',
+    accion_label:       '✦ Acción del día',
+    oracion_label:      '🙏 Tu oración',
+    counselor_title:    'Consejero Espiritual',
+    counselor_sub:      'Basado en la promesa de hoy',
+    input_placeholder:  'Escribe tu pregunta…',
+    quick_animo_text:   'Necesito ánimo',
+    quick_animo_msg:    'Necesito ánimo, estoy pasando por un momento difícil',
+    quick_vers_text:    'Versículos relacionados',
+    quick_vers_msg:     '¿Hay otros versículos relacionados con esta promesa?',
+    bosquejos_title:    'Bosquejos de la Lección de Escuela Sabática',
+    semana_del:         'Semana del',
+    adultos:            'Adultos',
+    jovenes:            'Jóvenes',
+    leccion:            'Lección',
+    bosquejo_pdf:       '📄 Bosquejo PDF',
+    bosquejo_ppt:       '📊 Bosquejo PPT',
+    descargar_pdf:      '📄 Descargar PDF',
+    descargar_ppt:      '📊 Descargar PPT',
+    cargando:           'Cargando…',
+    counselor_label:    '✦ Consejero Espiritual',
+    sigueme_label:      'Sígueme en',
+    footer_msg:         'Hecho con ❤️ para tu crecimiento espiritual',
+    error_load:         'No se pudieron cargar las promesas. Por favor recarga la página.',
+    ppt_unavailable:    'PPT no disponible esta semana',
+    ppt_title:          'Descargar presentación PowerPoint',
+    thinking: ['El consejero está reflexionando…','Buscando en la Palabra…','Preparando una respuesta para ti…','Meditando en la promesa del día…'],
+    error_reply:        'Lo siento, tuve un problema al responder. Por favor intenta de nuevo.',
+    error_conn:         'No pude conectarme en este momento. Verifica tu conexión e intenta de nuevo.',
+    greeting:      (v) => `¡Que esta promesa ilumine tu día! <em>"${v}…"</em><br><br>¿Tienes alguna duda sobre esta promesa o necesitas consejo para aplicarla en tu vida?`,
+    greeting_none: (d) => `¡Hola! Bienvenido a <em>Una Promesa de Dios para Mí</em>. Aunque la promesa para el ${d} aún no está disponible, puedo compartirte reflexiones bíblicas, darte ánimo o responder tus preguntas. ¿En qué puedo ayudarte hoy?`,
+  },
+  pt: {
+    title:              'Uma Promessa de Deus para Mim',
+    subtitle:           'Devocional Diário · 2026',
+    loading_promise:    'Carregando sua promessa...',
+    promise_coming:     'A promessa de hoje está a caminho',
+    promise_not_pub:    'O devocional para este dia ainda não foi publicado.<br>Você pode me fazer suas perguntas mesmo assim.',
+    accion_label:       '✦ Ação do dia',
+    oracion_label:      '🙏 Sua oração',
+    counselor_title:    'Conselheiro Espiritual',
+    counselor_sub:      'Baseado na promessa de hoje',
+    input_placeholder:  'Escreva sua pergunta…',
+    quick_animo_text:   'Preciso de ânimo',
+    quick_animo_msg:    'Preciso de ânimo, estou passando por um momento difícil',
+    quick_vers_text:    'Versículos relacionados',
+    quick_vers_msg:     'Há outros versículos relacionados com esta promessa?',
+    bosquejos_title:    'Esboços da Lição da Escola Sabatina',
+    semana_del:         'Semana de',
+    adultos:            'Adultos',
+    jovenes:            'Jovens',
+    leccion:            'Lição',
+    bosquejo_pdf:       '📄 Esboço PDF',
+    bosquejo_ppt:       '📊 Esboço PPT',
+    descargar_pdf:      '📄 Baixar PDF',
+    descargar_ppt:      '📊 Baixar PPT',
+    cargando:           'Carregando…',
+    counselor_label:    '✦ Conselheiro Espiritual',
+    sigueme_label:      'Siga-me em',
+    footer_msg:         'Feito com ❤️ para o seu crescimento espiritual',
+    error_load:         'Não foi possível carregar as promessas. Por favor, recarregue a página.',
+    ppt_unavailable:    'PPT não disponível esta semana',
+    ppt_title:          'Baixar apresentação PowerPoint',
+    thinking: ['O conselheiro está refletindo…','Buscando na Palavra…','Preparando uma resposta para você…','Meditando na promessa do dia…'],
+    error_reply:        'Desculpe, tive um problema ao responder. Por favor, tente novamente.',
+    error_conn:         'Não consegui me conectar. Verifique sua conexão e tente novamente.',
+    greeting:      (v) => `Que esta promessa ilumine o seu dia! <em>"${v}…"</em><br><br>Tem alguma dúvida sobre esta promessa ou precisa de conselho para aplicá-la em sua vida?`,
+    greeting_none: (d) => `Olá! Bem-vindo a <em>Uma Promessa de Deus para Mim</em>. Embora a promessa para ${d} ainda não esteja disponível, posso compartilhar reflexões bíblicas, dar ânimo ou responder suas perguntas. Em que posso ajudá-lo hoje?`,
+  }
+};
+
+function L(key) {
+  const lang = LABELS[currentLang] || LABELS['es'];
+  return lang[key] !== undefined ? lang[key] : (LABELS['es'][key] || key);
+}
+
+function applyLangUI() {
+  document.documentElement.lang = currentLang === 'pt' ? 'pt-BR' : 'es';
+  document.title = L('title');
+
+  const setText = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+  setText('header-title',        L('title'));
+  setText('header-subtitle',     L('subtitle'));
+  setText('sigueme-label',       L('sigueme_label'));
+  setText('counselor-title',     L('counselor_title'));
+  setText('counselor-sub',       L('counselor_sub'));
+  setText('bosquejos-title',     L('bosquejos_title'));
+  setText('adultos-badge',       L('adultos'));
+  setText('jovenes-badge',       L('jovenes'));
+  setText('footer-msg',          L('footer_msg'));
+  setText('quick-animo-label',   ' ' + L('quick_animo_text'));
+  setText('quick-versiculos-label', ' ' + L('quick_vers_text'));
+
+  const inp = document.getElementById('user-input');
+  if (inp) inp.placeholder = L('input_placeholder');
+
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.lang === currentLang);
+  });
+}
+
+function setLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('lang', lang);
+  chatHistory = [];
+  const msgs = document.getElementById('messages');
+  if (msgs) msgs.innerHTML = '';
+  applyLangUI();
+  renderToday();
+  initBosquejos();
+}
+
+// ─── Data & State ────────────────────────────────────────────────
 let promesas = {};
 let todayPromise = null;
 let chatHistory = [];
-
-const MONTHS_ES = ['enero','febrero','marzo','abril','mayo','junio',
-                   'julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const ptCache = {};
 
 function getTodayKey() {
   const now = new Date();
@@ -878,22 +1035,51 @@ function getTodayKey() {
 
 function formatDate(key) {
   const [y, m, d] = key.split('-');
-  const month = MONTHS_ES[parseInt(m) - 1];
+  const months = MONTHS[currentLang];
+  const month = months[parseInt(m) - 1];
   return `${parseInt(d)} de ${month.charAt(0).toUpperCase() + month.slice(1)} de ${y}`;
 }
 
-// ─── Load Promises ───────────────────────────────────────────────
+// ─── Load Promises ────────────────────────────────────────────────
 async function loadPromesas() {
   try {
     const res = await fetch('./promesas.json');
     promesas = await res.json();
     renderToday();
   } catch (e) {
-    showError('No se pudieron cargar las promesas. Por favor recarga la página.');
+    showError(L('error_load'));
   }
 }
 
-function renderToday() {
+async function translatePromise(promise) {
+  const key = getTodayKey();
+  if (ptCache[key]) return ptCache[key];
+  const stored = sessionStorage.getItem('pt_' + key);
+  if (stored) {
+    try { ptCache[key] = JSON.parse(stored); return ptCache[key]; } catch(e) {}
+  }
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        system: 'Você é um tradutor especializado em conteúdo devocional cristão adventista. Traduza para Português do Brasil mantendo o tom espiritual e literário. Responda APENAS com um objeto JSON válido, sem texto adicional nem blocos de código.',
+        messages: [{ role: 'user', content: 'Traduza para Português do Brasil. Retorne exatamente este JSON com os valores traduzidos:\n' + JSON.stringify({ title: promise.title, verse: promise.verse, body: promise.body, accion: promise.accion, oracion: promise.oracion }) }]
+      })
+    });
+    const data = await res.json();
+    let txt = (data.reply || '').replace(/^```json\n?/, '').replace(/\n?```$/, '').trim();
+    const translated = JSON.parse(txt);
+    ptCache[key] = translated;
+    sessionStorage.setItem('pt_' + key, JSON.stringify(translated));
+    return translated;
+  } catch(e) {
+    console.warn('Translation failed, using Spanish:', e);
+    return promise;
+  }
+}
+
+async function renderToday() {
   const key = getTodayKey();
   document.getElementById('today-label').textContent = formatDate(key);
   todayPromise = promesas[key] || null;
@@ -904,69 +1090,53 @@ function renderToday() {
     card.innerHTML = `
       <div class="no-promise">
         <div class="icon">🌿</div>
-        <h3>La promesa de hoy está en camino</h3>
-        <p>El devocional para este día aún no ha sido publicado.<br>
-           Puedes hacerme tus preguntas de todos modos.</p>
+        <h3>${L('promise_coming')}</h3>
+        <p>${L('promise_not_pub')}</p>
       </div>`;
-    addMessage('assistant', `¡Hola! Bienvenido a <em>Una Promesa de Dios para Mí</em>.
-      Aunque la promesa para el ${formatDate(key)} aún no está disponible,
-      puedo compartirte reflexiones bíblicas, darte ánimo o responder tus preguntas.
-      ¿En qué puedo ayudarte hoy?`);
+    addMessage('assistant', L('greeting_none')(formatDate(key)));
     return;
   }
 
-  const verseClean = todayPromise.verse.replace(/^[«""]|[»""]$/g, '');
-  const bodyParas = todayPromise.body.split('\n\n')
-    .filter(p => p.trim())
-    .map(p => `<p>${p.trim()}</p>`)
+  card.innerHTML = `<div class="no-promise"><div class="icon">✦</div><h3>${L('loading_promise')}</h3></div>`;
+
+  let p = todayPromise;
+  if (currentLang === 'pt') p = await translatePromise(todayPromise);
+
+  const verseClean = p.verse.replace(/^[«""]|[»""]$/g, '');
+  const bodyParas = p.body.split('\n\n')
+    .filter(s => s.trim())
+    .map(s => `<p>${s.trim()}</p>`)
     .join('');
-  const accionText = todayPromise.accion.replace(/^Acción del día:\s*/i, '');
-  const oracionText = todayPromise.oracion.replace(/^Tu oración:\s*/i, '');
+  const accionText = p.accion.replace(/^Acción del día:\s*/i, '').replace(/^Ação do dia:\s*/i, '');
+  const oracionText = p.oracion.replace(/^Tu oración:\s*/i, '').replace(/^Sua oração:\s*/i, '');
 
   card.innerHTML = `
-    <div class="card-title">${todayPromise.title}</div>
-    <div class="verse-block">
-      <div class="verse-text">${verseClean}</div>
-    </div>
+    <div class="card-title">${p.title}</div>
+    <div class="verse-block"><div class="verse-text">${verseClean}</div></div>
     <div class="body-text">${bodyParas}</div>
-    ${accionText ? `<div class="accion-block"><strong>✦ Acción del día</strong>${accionText}</div>` : ''}
-    ${oracionText ? `<div class="oracion-block"><strong>🙏 Tu oración</strong>${oracionText}</div>` : ''}
+    ${accionText ? `<div class="accion-block"><strong>${L('accion_label')}</strong>${accionText}</div>` : ''}
+    ${oracionText ? `<div class="oracion-block"><strong>${L('oracion_label')}</strong>${oracionText}</div>` : ''}
   `;
 
-  addMessage('assistant', `¡Que esta promesa ilumine tu día!
-    <em>"${verseClean.split('.')[0]}…"</em><br><br>
-    ¿Tienes alguna duda sobre esta promesa o necesitas consejo para aplicarla en tu vida?`);
+  addMessage('assistant', L('greeting')(verseClean.split('.')[0]));
 }
 
-// ─── Chat ────────────────────────────────────────────────────────
+// ─── Chat ─────────────────────────────────────────────────────────
 function getSystemPrompt() {
   const key = getTodayKey();
   const p = todayPromise;
-  const context = p
-    ? `La promesa del día de hoy (${p.date}) es:
-Título: ${p.title}
-Versículo: ${p.verse}
-Mensaje devocional: ${p.body}
-Acción del día: ${p.accion}
-Oración: ${p.oracion}`
+
+  if (currentLang === 'pt') {
+    const ctx = p
+      ? `A promessa do dia de hoje (${p.date}) é:\nTítulo: ${p.title}\nVersículo: ${p.verse}\nMensagem devocional: ${p.body}\nAção do dia: ${p.accion}\nOração: ${p.oracion}`
+      : `Hoje não há promessa disponível para ${formatDate(key)}.`;
+    return `Você é o Conselheiro Espiritual do aplicativo "Uma Promessa de Deus para Mim", criado pelo Dr. Tito Goicochea M. (NEED DSA). Você é sábio, caloroso, empático e profundamente bíblico. Sua missão é acompanhar o usuário em sua jornada espiritual.\n\n${ctx}\n\nINSTRUÇÕES IMPORTANTES:\n- Responda SEMPRE em Português do Brasil, com carinho e amor cristão\n- Ancre CADA resposta na promessa bíblica do dia e na Palavra de Deus\n- Se o usuário compartilhar uma preocupação ou dor, primeiro ouça com compaixão, depois aconselhe\n- Use formato Markdown para estruturar bem sua resposta (títulos, negritos, citações bíblicas com >)\n- Seja profundo mas conciso — máximo 3-4 seções curtas por resposta\n- Você pode citar versículos relacionados para enriquecer o conselho\n- Termine sempre com uma pergunta de reflexão ou um convite para continuar conversando\n- Se alguém expressar pensamentos de se machucar, recomende com amor buscar ajuda profissional\n- NÃO faça afirmações médicas, legais ou financeiras\n- Use emojis com moderação (🙏 📖 ✨) para dar calor sem exagerar`;
+  }
+
+  const ctx = p
+    ? `La promesa del día de hoy (${p.date}) es:\nTítulo: ${p.title}\nVersículo: ${p.verse}\nMensaje devocional: ${p.body}\nAcción del día: ${p.accion}\nOración: ${p.oracion}`
     : `Hoy no hay promesa disponible para ${formatDate(key)}.`;
-
-  return `Eres el Consejero Espiritual de la app "Una Promesa de Dios para Mí", creada por el Dr. Tito Goicochea M. (NEED DSA).
-Eres sabio, cálido, empático y profundamente bíblico. Tu misión es acompañar al usuario en su camino espiritual.
-
-${context}
-
-INSTRUCCIONES IMPORTANTES:
-- Responde SIEMPRE en español, con calidez y amor cristiano
-- Ancla CADA respuesta en la promesa bíblica del día y en la Palabra de Dios
-- Si el usuario comparte una preocupación o dolor, primero escúchalo con compasión, luego aconseja
-- Usa formato Markdown para estructurar bien tu respuesta (títulos, negritas, citas bíblicas con >)
-- Sé profundo pero conciso — máximo 3-4 secciones cortas por respuesta
-- Puedes citar versículos relacionados para enriquecer el consejo
-- Cierra siempre con una pregunta de reflexión o una invitación a seguir conversando
-- Si alguien expresa pensamientos de hacerse daño, recomiéndale con amor buscar ayuda profesional
-- NO hagas afirmaciones médicas, legales ni financieras
-- Usa emojis con moderación (🙏 📖 ✨) para dar calidez sin exagerar`;
+  return `Eres el Consejero Espiritual de la app "Una Promesa de Dios para Mí", creada por el Dr. Tito Goicochea M. (NEED DSA). Eres sabio, cálido, empático y profundamente bíblico. Tu misión es acompañar al usuario en su camino espiritual.\n\n${ctx}\n\nINSTRUCCIONES IMPORTANTES:\n- Responde SIEMPRE en español, con calidez y amor cristiano\n- Ancla CADA respuesta en la promesa bíblica del día y en la Palabra de Dios\n- Si el usuario comparte una preocupación o dolor, primero escúchalo con compasión, luego aconseja\n- Usa formato Markdown para estructurar bien tu respuesta (títulos, negritas, citas bíblicas con >)\n- Sé profundo pero conciso — máximo 3-4 secciones cortas por respuesta\n- Puedes citar versículos relacionados para enriquecer el consejo\n- Cierra siempre con una pregunta de reflexión o una invitación a seguir conversando\n- Si alguien expresa pensamientos de hacerse daño, recomiéndale con amor buscar ayuda profesional\n- NO hagas afirmaciones médicas, legales ni financieras\n- Usa emojis con moderación (🙏 📖 ✨) para dar calidez sin exagerar`;
 }
 
 async function sendMessage() {
@@ -986,17 +1156,9 @@ async function sendMessage() {
   const msgDiv = document.createElement('div');
   msgDiv.className = 'msg typing';
   msgDiv.id = typingId;
-  const thinkingPhrases = [
-    'El consejero está reflexionando…',
-    'Buscando en la Palabra…',
-    'Preparando una respuesta para ti…',
-    'Meditando en la promesa del día…'
-  ];
-  const phrase = thinkingPhrases[Math.floor(Math.random() * thinkingPhrases.length)];
-  msgDiv.innerHTML = `
-    <div class="typing-dots"><span></span><span></span><span></span></div>
-    <div class="thinking-text">${phrase}</div>
-  `;
+  const phrases = L('thinking');
+  const phrase = phrases[Math.floor(Math.random() * phrases.length)];
+  msgDiv.innerHTML = `<div class="typing-dots"><span></span><span></span><span></span></div><div class="thinking-text">${phrase}</div>`;
   document.getElementById('messages').appendChild(msgDiv);
   scrollMessages();
 
@@ -1012,13 +1174,12 @@ async function sendMessage() {
       chatHistory.push({ role: 'assistant', content: data.reply });
       addMessage('assistant', data.reply);
     } else {
-      addMessage('assistant', 'Lo siento, tuve un problema al responder. Por favor intenta de nuevo.');
+      addMessage('assistant', L('error_reply'));
     }
   } catch (e) {
     document.getElementById(typingId)?.remove();
-    addMessage('assistant', 'No pude conectarme en este momento. Verifica tu conexión e intenta de nuevo.');
+    addMessage('assistant', L('error_conn'));
   }
-
   btn.disabled = false;
 }
 
@@ -1026,6 +1187,8 @@ function quickSend(text) {
   document.getElementById('user-input').value = text;
   sendMessage();
 }
+function quickSendAnimo()     { quickSend(L('quick_animo_msg')); }
+function quickSendVersiculos(){ quickSend(L('quick_vers_msg')); }
 
 function addMessage(role, html) {
   const div = document.createElement('div');
@@ -1033,13 +1196,11 @@ function addMessage(role, html) {
   if (role === 'assistant') {
     let rendered = html;
     if (typeof marked !== 'undefined') {
-      try { rendered = marked.parse(html, { breaks: true, gfm: true }); }
-      catch(e) { rendered = html; }
+      try { rendered = marked.parse(html, { breaks: true, gfm: true }); } catch(e) {}
     }
-    div.innerHTML = `<div class="label">✦ Consejero Espiritual</div><div class="md-content">${rendered}</div>`;
+    div.innerHTML = `<div class="label">${L('counselor_label')}</div><div class="md-content">${rendered}</div>`;
   } else {
-    const safe = html.replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    div.innerHTML = safe;
+    div.innerHTML = html.replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
   document.getElementById('messages').appendChild(div);
   scrollMessages();
@@ -1051,14 +1212,10 @@ function scrollMessages() {
 }
 
 function showError(msg) {
-  document.getElementById('promise-card').innerHTML = `
-    <div class="no-promise">
-      <div class="icon">⚠️</div>
-      <h3>Error</h3><p>${msg}</p>
-    </div>`;
+  document.getElementById('promise-card').innerHTML = `<div class="no-promise"><div class="icon">⚠️</div><h3>Error</h3><p>${msg}</p></div>`;
 }
 
-// ─── Event Listeners ─────────────────────────────────────────────
+// ─── Event Listeners ──────────────────────────────────────────────
 document.getElementById('send-btn').addEventListener('click', sendMessage);
 document.getElementById('user-input').addEventListener('keydown', e => {
   if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
@@ -1068,39 +1225,39 @@ document.getElementById('user-input').addEventListener('input', function() {
   this.style.height = Math.min(this.scrollHeight, 120) + 'px';
 });
 
-// ─── Bosquejos ───────────────────────────────────────────────────
+// ─── Bosquejos ────────────────────────────────────────────────────
 const JOVENES_LESSONS = [
-  { num: 13, trimLabel: 'I Trimestre 2026',  title: 'ESPERANZA PARA LOS NO CRISTIANOS', sabbath: '2026-03-28', pdf: 'leccion13-IT26.pdf',  ppt: null },
-  { num: 1,  trimLabel: 'II Trimestre 2026', title: 'GOLPE DE REALIDAD',                  sabbath: '2026-04-04', pdf: 'leccion01-IIT26.pdf', ppt: null },
-  { num: 2,  trimLabel: 'II Trimestre 2026', title: 'CONOCIENDO A DIOS',                  sabbath: '2026-04-11', pdf: 'leccion02-IIT26.pdf', ppt: null },
-  { num: 3,  trimLabel: 'II Trimestre 2026', title: 'ORGULLO VERSUS HUMILDAD',             sabbath: '2026-04-18', pdf: 'leccion03-IIT26.pdf', ppt: null },
-  { num: 4,  trimLabel: 'II Trimestre 2026', title: 'EL ROL DE LA BIBLIA',                sabbath: '2026-04-25', pdf: 'leccion04-IIT26.pdf', ppt: null },
-  { num: 5,  trimLabel: 'II Trimestre 2026', title: 'CÓMO ESTUDIAR LA BIBLIA',            sabbath: '2026-05-02', pdf: 'leccion05-IIT26.pdf', ppt: null },
-  { num: 6,  trimLabel: 'II Trimestre 2026', title: 'MI VIDA DE ORACIÓN',                 sabbath: '2026-05-09', pdf: 'leccion06-IIT26.pdf', ppt: null },
-  { num: 7,  trimLabel: 'II Trimestre 2026', title: 'LA ORACIÓN PERSEVERANTE',            sabbath: '2026-05-16', pdf: 'leccion07-IIT26.pdf', ppt: null },
-  { num: 8,  trimLabel: 'II Trimestre 2026', title: 'LA FE',                              sabbath: '2026-05-23', pdf: 'leccion08-IIT26.pdf', ppt: null },
-  { num: 9,  trimLabel: 'II Trimestre 2026', title: 'EL PECADO, EL EVANGELIO Y LA LEY',  sabbath: '2026-05-30', pdf: 'leccion09-IIT26.pdf', ppt: null },
-  { num: 10, trimLabel: 'II Trimestre 2026', title: 'ARREPENTIMIENTO Y PERDÓN',           sabbath: '2026-06-06', pdf: 'leccion10-IIT26.pdf', ppt: null },
-  { num: 11, trimLabel: 'II Trimestre 2026', title: 'REVESES',                            sabbath: '2026-06-13', pdf: 'leccion11-IIT26.pdf', ppt: null },
-  { num: 12, trimLabel: 'II Trimestre 2026', title: 'COMPÁRTELO',                         sabbath: '2026-06-20', pdf: 'leccion12-IIT26.pdf', ppt: null },
-  { num: 13, trimLabel: 'II Trimestre 2026', title: 'HACIA LA ETERNIDAD',                 sabbath: '2026-06-27', pdf: 'leccion13-IIT26.pdf', ppt: null },
+  { num: 13, trimLabel: 'I Trimestre 2026',  title: 'ESPERANZA PARA LOS NO CRISTIANOS', titlePt: 'ESPERANÇA PARA OS NÃO CRISTÃOS',  sabbath: '2026-03-28', pdf: 'leccion13-IT26.pdf',  pdfPt: null,               ppt: null, pptPt: null },
+  { num: 1,  trimLabel: 'II Trimestre 2026', title: 'GOLPE DE REALIDAD',                 titlePt: 'UM CHOQUE DE REALIDADE',           sabbath: '2026-04-04', pdf: 'leccion01-IIT26.pdf', pdfPt: null,               ppt: null, pptPt: null },
+  { num: 2,  trimLabel: 'II Trimestre 2026', title: 'CONOCIENDO A DIOS',                 titlePt: 'CONHECENDO A DEUS',                sabbath: '2026-04-11', pdf: 'leccion02-IIT26.pdf', pdfPt: null,               ppt: null, pptPt: null },
+  { num: 3,  trimLabel: 'II Trimestre 2026', title: 'ORGULLO VERSUS HUMILDAD',            titlePt: 'ORGULHO VERSUS HUMILDADE',         sabbath: '2026-04-18', pdf: 'leccion03-IIT26.pdf', pdfPt: null,               ppt: null, pptPt: null },
+  { num: 4,  trimLabel: 'II Trimestre 2026', title: 'EL ROL DE LA BIBLIA',               titlePt: 'O PAPEL DA BÍBLIA',                sabbath: '2026-04-25', pdf: 'leccion04-IIT26.pdf', pdfPt: null,               ppt: null, pptPt: null },
+  { num: 5,  trimLabel: 'II Trimestre 2026', title: 'CÓMO ESTUDIAR LA BIBLIA',           titlePt: 'COMO ESTUDAR A BÍBLIA',            sabbath: '2026-05-02', pdf: 'leccion05-IIT26.pdf', pdfPt: null,               ppt: null, pptPt: null },
+  { num: 6,  trimLabel: 'II Trimestre 2026', title: 'MI VIDA DE ORACIÓN',                titlePt: 'MINHA VIDA DE ORAÇÃO',             sabbath: '2026-05-09', pdf: 'leccion06-IIT26.pdf', pdfPt: null,               ppt: null, pptPt: null },
+  { num: 7,  trimLabel: 'II Trimestre 2026', title: 'LA ORACIÓN PERSEVERANTE',           titlePt: 'A ORAÇÃO PERSEVERANTE',            sabbath: '2026-05-16', pdf: 'leccion07-IIT26.pdf', pdfPt: null,               ppt: null, pptPt: null },
+  { num: 8,  trimLabel: 'II Trimestre 2026', title: 'LA FE',                             titlePt: 'A FÉ',                             sabbath: '2026-05-23', pdf: 'leccion08-IIT26.pdf', pdfPt: null,               ppt: null, pptPt: null },
+  { num: 9,  trimLabel: 'II Trimestre 2026', title: 'EL PECADO, EL EVANGELIO Y LA LEY', titlePt: 'O PECADO, O EVANGELHO E A LEI',    sabbath: '2026-05-30', pdf: 'leccion09-IIT26.pdf', pdfPt: null,               ppt: null, pptPt: null },
+  { num: 10, trimLabel: 'II Trimestre 2026', title: 'ARREPENTIMIENTO Y PERDÓN',          titlePt: 'ARREPENDIMENTO E PERDÃO',          sabbath: '2026-06-06', pdf: 'leccion10-IIT26.pdf', pdfPt: null,               ppt: null, pptPt: null },
+  { num: 11, trimLabel: 'II Trimestre 2026', title: 'REVESES',                           titlePt: 'REVESES',                          sabbath: '2026-06-13', pdf: 'leccion11-IIT26.pdf', pdfPt: null,               ppt: null, pptPt: null },
+  { num: 12, trimLabel: 'II Trimestre 2026', title: 'COMPÁRTELO',                        titlePt: 'COMPARTILHE',                      sabbath: '2026-06-20', pdf: 'leccion12-IIT26.pdf', pdfPt: null,               ppt: null, pptPt: null },
+  { num: 13, trimLabel: 'II Trimestre 2026', title: 'HACIA LA ETERNIDAD',                titlePt: 'RUMO À ETERNIDADE',                sabbath: '2026-06-27', pdf: 'leccion13-IIT26.pdf', pdfPt: null,               ppt: null, pptPt: null },
 ];
 
 const ADULTOS_LESSONS = [
-  { num: 13, trim: 'I',  trimLabel: 'I Trimestre 2026',  title: 'PERMANECER EN TODA LA VOLUNTAD DE DIOS', sabbath: '2026-03-28', pdf: 'leccion13-IT26.pdf',  ppt: 'leccion13-IT26.pptx' },
-  { num: 1,  trim: 'II', trimLabel: 'II Trimestre 2026', title: 'EVALÚATE',                               sabbath: '2026-04-04', pdf: 'leccion01-IIT26.pdf', ppt: 'leccion01-IIT26.pptx' },
-  { num: 2,  trim: 'II', trimLabel: 'II Trimestre 2026', title: 'CONOCIENDO A DIOS',                      sabbath: '2026-04-11', pdf: 'leccion02-IIT26.pdf', ppt: 'leccion02-IIT26.pptx' },
-  { num: 3,  trim: 'II', trimLabel: 'II Trimestre 2026', title: 'ORGULLO VERSUS HUMILDAD',                sabbath: '2026-04-18', pdf: 'leccion03-IIT26.pdf', ppt: 'leccion03-IIT26.pptx' },
-  { num: 4,  trim: 'II', trimLabel: 'II Trimestre 2026', title: 'EL ROL DE LA BIBLIA',                    sabbath: '2026-04-25', pdf: 'leccion04-IIT26.pdf', ppt: 'leccion04-IIT26.pptx' },
-  { num: 5,  trim: 'II', trimLabel: 'II Trimestre 2026', title: 'CÓMO ESTUDIAR LA BIBLIA',                sabbath: '2026-05-02', pdf: 'leccion05-IIT26.pdf', ppt: 'leccion05-IIT26.pptx' },
-  { num: 6,  trim: 'II', trimLabel: 'II Trimestre 2026', title: 'GUERREROS DE ORACIÓN',                   sabbath: '2026-05-09', pdf: 'leccion06-IIT26.pdf', ppt: 'leccion06-IIT26.pptx' },
-  { num: 7,  trim: 'II', trimLabel: 'II Trimestre 2026', title: 'LA ORACIÓN',                             sabbath: '2026-05-16', pdf: 'leccion07-IIT26.pdf', ppt: 'leccion07-IIT26.pptx' },
-  { num: 8,  trim: 'II', trimLabel: 'II Trimestre 2026', title: 'LA FE',                                  sabbath: '2026-05-23', pdf: 'leccion08-IIT26.pdf', ppt: 'leccion08-IIT26.pptx' },
-  { num: 9,  trim: 'II', trimLabel: 'II Trimestre 2026', title: 'EL PECADO, EL EVANGELIO Y LA LEY',       sabbath: '2026-05-30', pdf: 'leccion09-IIT26.pdf', ppt: 'leccion09-IIT26.pptx' },
-  { num: 10, trim: 'II', trimLabel: 'II Trimestre 2026', title: 'ARREPENTIMIENTO Y PERDÓN',               sabbath: '2026-06-06', pdf: 'leccion10-IIT26.pdf', ppt: 'leccion10-IIT26.pptx' },
-  { num: 11, trim: 'II', trimLabel: 'II Trimestre 2026', title: 'REVESES',                                sabbath: '2026-06-13', pdf: 'leccion11-IIT26.pdf', ppt: 'leccion11-IIT26.pptx' },
-  { num: 12, trim: 'II', trimLabel: 'II Trimestre 2026', title: 'COMPÁRTELO',                             sabbath: '2026-06-20', pdf: 'leccion12-IIT26.pdf', ppt: 'leccion12-IIT26.pptx' },
-  { num: 13, trim: 'II', trimLabel: 'II Trimestre 2026', title: 'HACIA LA ETERNIDAD',                     sabbath: '2026-06-27', pdf: 'leccion13-IIT26.pdf', ppt: 'leccion13-IIT26.pptx' },
+  { num: 13, trimLabel: 'I Trimestre 2026',  title: 'PERMANECER EN TODA LA VOLUNTAD DE DIOS', titlePt: 'PERMANECER EM TODA A VONTADE DE DEUS', sabbath: '2026-03-28', pdf: 'leccion13-IT26.pdf',  pdfPt: null,               ppt: 'leccion13-IT26.pptx',  pptPt: null },
+  { num: 1,  trimLabel: 'II Trimestre 2026', title: 'EVALÚATE',                               titlePt: 'AVALIE-SE',                            sabbath: '2026-04-04', pdf: 'leccion01-IIT26.pdf', pdfPt: 'leccion01-IIT26.pdf', ppt: 'leccion01-IIT26.pptx', pptPt: 'leccion01-IIT26.pptx' },
+  { num: 2,  trimLabel: 'II Trimestre 2026', title: 'CONOCIENDO A DIOS',                      titlePt: 'CONHECENDO A DEUS',                    sabbath: '2026-04-11', pdf: 'leccion02-IIT26.pdf', pdfPt: 'leccion02-IIT26.pdf', ppt: 'leccion02-IIT26.pptx', pptPt: 'leccion02-IIT26.pptx' },
+  { num: 3,  trimLabel: 'II Trimestre 2026', title: 'ORGULLO VERSUS HUMILDAD',                titlePt: 'ORGULHO VERSUS HUMILDADE',             sabbath: '2026-04-18', pdf: 'leccion03-IIT26.pdf', pdfPt: 'leccion03-IIT26.pdf', ppt: 'leccion03-IIT26.pptx', pptPt: 'leccion03-IIT26.pptx' },
+  { num: 4,  trimLabel: 'II Trimestre 2026', title: 'EL ROL DE LA BIBLIA',                    titlePt: 'O PAPEL DA BÍBLIA',                    sabbath: '2026-04-25', pdf: 'leccion04-IIT26.pdf', pdfPt: 'leccion04-IIT26.pdf', ppt: 'leccion04-IIT26.pptx', pptPt: 'leccion04-IIT26.pptx' },
+  { num: 5,  trimLabel: 'II Trimestre 2026', title: 'CÓMO ESTUDIAR LA BIBLIA',                titlePt: 'COMO ESTUDAR A BÍBLIA',                sabbath: '2026-05-02', pdf: 'leccion05-IIT26.pdf', pdfPt: 'leccion05-IIT26.pdf', ppt: 'leccion05-IIT26.pptx', pptPt: 'leccion05-IIT26.pptx' },
+  { num: 6,  trimLabel: 'II Trimestre 2026', title: 'GUERREROS DE ORACIÓN',                   titlePt: 'GUERREIROS DE ORAÇÃO',                 sabbath: '2026-05-09', pdf: 'leccion06-IIT26.pdf', pdfPt: 'leccion06-IIT26.pdf', ppt: 'leccion06-IIT26.pptx', pptPt: 'leccion06-IIT26.pptx' },
+  { num: 7,  trimLabel: 'II Trimestre 2026', title: 'LA ORACIÓN',                             titlePt: 'A ORAÇÃO',                             sabbath: '2026-05-16', pdf: 'leccion07-IIT26.pdf', pdfPt: 'leccion07-IIT26.pdf', ppt: 'leccion07-IIT26.pptx', pptPt: 'leccion07-IIT26.pptx' },
+  { num: 8,  trimLabel: 'II Trimestre 2026', title: 'LA FE',                                  titlePt: 'A FÉ',                                 sabbath: '2026-05-23', pdf: 'leccion08-IIT26.pdf', pdfPt: 'leccion08-IIT26.pdf', ppt: 'leccion08-IIT26.pptx', pptPt: 'leccion08-IIT26.pptx' },
+  { num: 9,  trimLabel: 'II Trimestre 2026', title: 'EL PECADO, EL EVANGELIO Y LA LEY',       titlePt: 'O PECADO, O EVANGELHO E A LEI',        sabbath: '2026-05-30', pdf: 'leccion09-IIT26.pdf', pdfPt: 'leccion09-IIT26.pdf', ppt: 'leccion09-IIT26.pptx', pptPt: 'leccion09-IIT26.pptx' },
+  { num: 10, trimLabel: 'II Trimestre 2026', title: 'ARREPENTIMIENTO Y PERDÓN',               titlePt: 'ARREPENDIMENTO E PERDÃO',              sabbath: '2026-06-06', pdf: 'leccion10-IIT26.pdf', pdfPt: 'leccion10-IIT26.pdf', ppt: 'leccion10-IIT26.pptx', pptPt: 'leccion10-IIT26.pptx' },
+  { num: 11, trimLabel: 'II Trimestre 2026', title: 'REVESES',                                titlePt: 'REVESES',                              sabbath: '2026-06-13', pdf: 'leccion11-IIT26.pdf', pdfPt: 'leccion11-IIT26.pdf', ppt: 'leccion11-IIT26.pptx', pptPt: 'leccion11-IIT26.pptx' },
+  { num: 12, trimLabel: 'II Trimestre 2026', title: 'COMPÁRTELO',                             titlePt: 'COMPARTILHE',                          sabbath: '2026-06-20', pdf: 'leccion12-IIT26.pdf', pdfPt: 'leccion12-IIT26.pdf', ppt: 'leccion12-IIT26.pptx', pptPt: 'leccion12-IIT26.pptx' },
+  { num: 13, trimLabel: 'II Trimestre 2026', title: 'HACIA LA ETERNIDAD',                     titlePt: 'RUMO À ETERNIDADE',                    sabbath: '2026-06-27', pdf: 'leccion13-IIT26.pdf', pdfPt: 'leccion13-IIT26.pdf', ppt: 'leccion13-IIT26.pptx', pptPt: 'leccion13-IIT26.pptx' },
 ];
 
 function getCurrentLesson(lessons) {
@@ -1113,34 +1270,40 @@ function getCurrentLesson(lessons) {
   return lessons[lessons.length - 1];
 }
 
-function formatSabbathDate(dateStr) {
-  const [y, m, d] = dateStr.split('-');
-  const months = ['enero','febrero','marzo','abril','mayo','junio',
-                  'julio','agosto','septiembre','octubre','noviembre','diciembre'];
-  return `${parseInt(d)} de ${months[parseInt(m)-1]} de ${y}`;
-}
-
 function formatWeekRange(sabbathDateStr) {
   const sabbath = new Date(sabbathDateStr + 'T00:00:00');
   const sunday = new Date(sabbath);
   sunday.setDate(sabbath.getDate() - 6);
-  const months = ['enero','febrero','marzo','abril','mayo','junio',
-                  'julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  const months = MONTHS[currentLang];
+  const sep = currentLang === 'pt' ? 'a' : 'al';
   const dS = sunday.getDate(), mS = sunday.getMonth(), yS = sunday.getFullYear();
   const dE = sabbath.getDate(), mE = sabbath.getMonth(), yE = sabbath.getFullYear();
-  if (mS === mE) return `${dS} al ${dE} de ${months[mE]} de ${yE}`;
-  if (yS === yE) return `${dS} de ${months[mS]} al ${dE} de ${months[mE]} de ${yE}`;
-  return `${dS} de ${months[mS]} de ${yS} al ${dE} de ${months[mE]} de ${yE}`;
+  if (mS === mE) return `${dS} ${sep} ${dE} de ${months[mE]} de ${yE}`;
+  if (yS === yE) return `${dS} de ${months[mS]} ${sep} ${dE} de ${months[mE]} de ${yE}`;
+  return `${dS} de ${months[mS]} de ${yS} ${sep} ${dE} de ${months[mE]} de ${yE}`;
+}
+
+function getLessonTitle(lesson) {
+  return (currentLang === 'pt' && lesson.titlePt) ? lesson.titlePt : lesson.title;
 }
 
 function initBosquejos() {
   const lessonA = getCurrentLesson(ADULTOS_LESSONS);
   const lessonJ = getCurrentLesson(JOVENES_LESSONS);
-  document.getElementById('bosquejo-week-label').textContent = formatWeekRange(lessonA.sabbath);
-  document.getElementById('adultos-lesson-num').textContent = `Lección ${lessonA.num} · ${lessonA.trimLabel}`;
-  document.getElementById('adultos-lesson-title').textContent = lessonA.title;
-  document.getElementById('jovenes-lesson-num').textContent = `Lección ${lessonJ.num} · ${lessonJ.trimLabel}`;
-  document.getElementById('jovenes-lesson-title').textContent = lessonJ.title;
+  const weekLabel = formatWeekRange(lessonA.sabbath);
+
+  document.getElementById('bosquejo-week-label').textContent = weekLabel;
+  document.getElementById('adultos-lesson-num').textContent  = `${L('leccion')} ${lessonA.num} · ${lessonA.trimLabel}`;
+  document.getElementById('adultos-lesson-title').textContent = getLessonTitle(lessonA);
+  document.getElementById('jovenes-lesson-num').textContent  = `${L('leccion')} ${lessonJ.num} · ${lessonJ.trimLabel}`;
+  document.getElementById('jovenes-lesson-title').textContent = getLessonTitle(lessonJ);
+
+  // Badge labels
+  const adBadge = document.getElementById('adultos-badge');
+  const joBadge = document.getElementById('jovenes-badge');
+  if (adBadge) adBadge.textContent = L('adultos');
+  if (joBadge) joBadge.textContent = L('jovenes');
+
   initBosquejoBtns();
 }
 
@@ -1149,17 +1312,27 @@ const SITE_URL = 'https://promesa-de-dios-para-mi.vercel.app';
 function openBosquejoPDF(type) {
   const isAdultos = type === 'adultos';
   const lesson = isAdultos ? getCurrentLesson(ADULTOS_LESSONS) : getCurrentLesson(JOVENES_LESSONS);
-  const base = isAdultos ? './bosquejos/adultos/' : './bosquejos/jovenes/';
+  const usePt = currentLang === 'pt';
 
-  document.getElementById('bmodal-badge').textContent = `${isAdultos ? 'Adultos' : 'Jóvenes'} · ${lesson.trimLabel}`;
-  document.getElementById('bmodal-title').textContent = `Lección ${lesson.num} · ${lesson.title}`;
-  document.getElementById('bmodal-date').textContent = `Semana del ${formatWeekRange(lesson.sabbath)}`;
+  let pdfSubPath;
+  if (isAdultos) {
+    pdfSubPath = (usePt && lesson.pdfPt)
+      ? 'bosquejos/adultos/pdf-pt/' + lesson.pdfPt
+      : 'bosquejos/adultos/pdf/'    + lesson.pdf;
+  } else {
+    pdfSubPath = 'bosquejos/jovenes/pdf/' + lesson.pdf;
+  }
 
-  const pdfUrl = base + 'pdf/' + lesson.pdf;
-  const dlBtn = document.getElementById('bmodal-download-btn');
-  dlBtn.href = pdfUrl;
-  dlBtn.download = lesson.pdf;
-  dlBtn.textContent = '📄 Descargar PDF';
+  const badge = isAdultos ? L('adultos') : L('jovenes');
+  document.getElementById('bmodal-badge').textContent = `${badge} · ${lesson.trimLabel}`;
+  document.getElementById('bmodal-title').textContent = `${L('leccion')} ${lesson.num} · ${getLessonTitle(lesson)}`;
+  document.getElementById('bmodal-date').textContent  = `${L('semana_del')} ${formatWeekRange(lesson.sabbath)}`;
+
+  const pdfUrl = './' + pdfSubPath;
+  const dlBtn  = document.getElementById('bmodal-download-btn');
+  dlBtn.href      = pdfUrl;
+  dlBtn.download  = pdfSubPath.split('/').pop();
+  dlBtn.textContent = L('descargar_pdf');
   dlBtn.className = 'bmodal-btn pdf';
 
   document.getElementById('bmodal-iframe').src = pdfUrl;
@@ -1170,20 +1343,24 @@ function openBosquejoPDF(type) {
 function openBosquejoPPT(type) {
   const isAdultos = type === 'adultos';
   const lesson = isAdultos ? getCurrentLesson(ADULTOS_LESSONS) : getCurrentLesson(JOVENES_LESSONS);
-  if (!lesson.ppt) return;
+  const usePt = currentLang === 'pt';
 
-  document.getElementById('bmodal-badge').textContent = `${isAdultos ? 'Adultos' : 'Jóvenes'} · ${lesson.trimLabel}`;
-  document.getElementById('bmodal-title').textContent = `Lección ${lesson.num} · ${lesson.title}`;
-  document.getElementById('bmodal-date').textContent = `Semana del ${formatWeekRange(lesson.sabbath)}`;
+  const pptFile = (usePt && lesson.pptPt) ? lesson.pptPt : lesson.ppt;
+  if (!pptFile) return;
 
-  const pptRelUrl = `/bosquejos/adultos/ppt/${lesson.ppt}`;
-  const pptFullUrl = SITE_URL + pptRelUrl;
-  const viewerUrl = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(pptFullUrl)}`;
+  const pptDir    = (usePt && lesson.pptPt) ? 'ppt-pt' : 'ppt';
+  const pptRelUrl = `/bosquejos/adultos/${pptDir}/${pptFile}`;
+  const viewerUrl = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(SITE_URL + pptRelUrl)}`;
+
+  const badge = isAdultos ? L('adultos') : L('jovenes');
+  document.getElementById('bmodal-badge').textContent = `${badge} · ${lesson.trimLabel}`;
+  document.getElementById('bmodal-title').textContent = `${L('leccion')} ${lesson.num} · ${getLessonTitle(lesson)}`;
+  document.getElementById('bmodal-date').textContent  = `${L('semana_del')} ${formatWeekRange(lesson.sabbath)}`;
 
   const dlBtn = document.getElementById('bmodal-download-btn');
-  dlBtn.href = pptRelUrl;
-  dlBtn.download = lesson.ppt;
-  dlBtn.textContent = '📊 Descargar PPT';
+  dlBtn.href      = pptRelUrl;
+  dlBtn.download  = pptFile;
+  dlBtn.textContent = L('descargar_ppt');
   dlBtn.className = 'bmodal-btn ppt';
 
   document.getElementById('bmodal-iframe').src = viewerUrl;
@@ -1193,14 +1370,26 @@ function openBosquejoPPT(type) {
 
 function initBosquejoBtns() {
   const lessonA = getCurrentLesson(ADULTOS_LESSONS);
-  const pptBtn = document.getElementById('adultos-ppt-btn');
-  if (!lessonA.ppt) {
+  const usePt   = currentLang === 'pt';
+  const hasPpt  = usePt ? lessonA.pptPt : lessonA.ppt;
+  const pptBtn  = document.getElementById('adultos-ppt-btn');
+
+  if (!hasPpt) {
     pptBtn.classList.add('unavailable');
-    pptBtn.title = 'PPT no disponible esta semana';
+    pptBtn.title = L('ppt_unavailable');
   } else {
     pptBtn.classList.remove('unavailable');
-    pptBtn.title = 'Descargar presentación PowerPoint';
+    pptBtn.title = L('ppt_title');
   }
+
+  // Update card button texts
+  const sel = (cardId, cls) => document.querySelector(`#${cardId} .bcard-btn.${cls}`);
+  const adPdf = sel('card-adultos','pdf'), adPpt = sel('card-adultos','ppt');
+  const joPdf = sel('card-jovenes','pdf'), joPpt = sel('card-jovenes','ppt');
+  if (adPdf) adPdf.textContent = L('bosquejo_pdf');
+  if (adPpt) adPpt.textContent = L('bosquejo_ppt');
+  if (joPdf) joPdf.textContent = L('bosquejo_pdf');
+  if (joPpt) joPpt.textContent = L('bosquejo_ppt');
 }
 
 function closeBosquejo() {
@@ -1215,7 +1404,8 @@ function handleOverlayClick(e) {
 
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeBosquejo(); });
 
-// ─── Init ────────────────────────────────────────────────────────
+// ─── Init ─────────────────────────────────────────────────────────
+applyLangUI();
 loadPromesas();
 initBosquejos();
 </script>
