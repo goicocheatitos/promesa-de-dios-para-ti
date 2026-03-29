@@ -294,7 +294,7 @@
     .no-promise p { font-size: 0.88rem; color: var(--muted); }
 
     /* ── Chat Sidebar (right) ── */
-    .chat-sidebar {
+    .bosquejos-sidebar {
       position: sticky; top: 1.5rem;
       background: var(--card);
       border: 1px solid var(--border);
@@ -304,180 +304,6 @@
       -webkit-backdrop-filter: blur(16px);
       box-shadow: 0 8px 32px rgba(0,0,0,0.35);
       display: flex; flex-direction: column; gap: 0.85rem;
-    }
-
-    .chat-sidebar-header {
-      text-align: center;
-      padding-bottom: 0.85rem;
-      border-bottom: 1px solid var(--border);
-    }
-    .chat-sidebar-header .chat-icon {
-      font-size: 1.6rem; margin-bottom: 0.3rem;
-      display: block;
-      filter: drop-shadow(0 0 8px rgba(201,168,76,0.5));
-    }
-    .chat-sidebar-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.2rem; font-weight: 600;
-      color: var(--gold-light);
-    }
-    .chat-sidebar-sub {
-      font-size: 0.73rem; color: var(--muted);
-      margin-top: 0.2rem;
-    }
-
-    #messages {
-      display: flex; flex-direction: column; gap: 0.8rem;
-      max-height: 380px; min-height: 120px;
-      overflow-y: auto;
-      padding: 0.2rem 0.1rem;
-      scrollbar-width: thin;
-      scrollbar-color: rgba(201,168,76,0.2) transparent;
-    }
-    #messages::-webkit-scrollbar { width: 4px; }
-    #messages::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.2); border-radius: 4px; }
-
-    .msg {
-      max-width: 95%;
-      padding: 0.7rem 0.9rem;
-      border-radius: 14px;
-      font-size: 0.86rem;
-      line-height: 1.6;
-      animation: fadeUp 0.25s ease;
-    }
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(6px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    .msg.user {
-      align-self: flex-end;
-      background: linear-gradient(135deg, rgba(100,60,200,0.5), rgba(60,30,150,0.5));
-      border: 1px solid rgba(100,60,200,0.35);
-      color: var(--text);
-    }
-    .msg.assistant {
-      align-self: flex-start;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid var(--border);
-      color: var(--text);
-    }
-    .msg.assistant .label {
-      font-size: 0.68rem; color: var(--gold); letter-spacing: 0.08em;
-      text-transform: uppercase; margin-bottom: 0.3rem;
-    }
-    .msg.typing {
-      align-self: flex-start;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid var(--border);
-      padding: 0.85rem 1rem;
-    }
-    .typing-dots span {
-      display: inline-block; width: 5px; height: 5px;
-      background: var(--gold); border-radius: 50%; margin: 0 2px;
-      animation: bounce 1.2s ease infinite;
-    }
-    .typing-dots span:nth-child(2) { animation-delay: 0.15s; }
-    .typing-dots span:nth-child(3) { animation-delay: 0.3s; }
-    @keyframes bounce {
-      0%,60%,100% { transform: translateY(0); }
-      30% { transform: translateY(-5px); }
-    }
-    .thinking-text {
-      font-size: 0.75rem; color: var(--gold);
-      letter-spacing: 0.04em; margin-top: 0.35rem;
-    }
-
-    /* ── Markdown ── */
-    .msg.assistant .md-content h1,
-    .msg.assistant .md-content h2,
-    .msg.assistant .md-content h3 {
-      font-family: 'Cormorant Garamond', serif;
-      color: var(--gold-light); margin: 0.7rem 0 0.35rem;
-      font-size: 1rem; font-weight: 600;
-    }
-    .msg.assistant .md-content p { margin-bottom: 0.5rem; }
-    .msg.assistant .md-content p:last-child { margin-bottom: 0; }
-    .msg.assistant .md-content strong { color: var(--gold-light); font-weight: 600; }
-    .msg.assistant .md-content em { font-style: italic; color: var(--muted); }
-    .msg.assistant .md-content blockquote {
-      border-left: 2px solid var(--gold); padding: 0.35rem 0.7rem;
-      margin: 0.5rem 0; background: rgba(201,168,76,0.06);
-      border-radius: 0 8px 8px 0; font-style: italic; color: var(--muted);
-    }
-    .msg.assistant .md-content ul,
-    .msg.assistant .md-content ol { padding-left: 1.3rem; margin: 0.35rem 0 0.5rem; }
-    .msg.assistant .md-content li { margin-bottom: 0.2rem; }
-    .msg.assistant .md-content hr {
-      border: none; border-top: 1px solid var(--border); margin: 0.6rem 0;
-    }
-    .msg.assistant .md-content code {
-      background: rgba(255,255,255,0.07); padding: 0.1em 0.35em;
-      border-radius: 4px; font-size: 0.82em;
-    }
-
-    /* ── Input area ── */
-    .input-area {
-      display: flex; gap: 0.5rem;
-    }
-    #user-input {
-      flex: 1;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid var(--border);
-      border-radius: 11px;
-      padding: 0.65rem 0.9rem;
-      color: var(--text);
-      font-family: 'Inter', sans-serif;
-      font-size: 0.85rem;
-      resize: none; outline: none;
-      transition: border-color 0.2s;
-    }
-    #user-input::placeholder { color: rgba(240,234,248,0.3); }
-    #user-input:focus { border-color: rgba(201,168,76,0.5); }
-
-    #send-btn {
-      width: 40px; height: 40px; flex-shrink: 0;
-      background: linear-gradient(135deg, var(--gold), #a87f30);
-      border: none; border-radius: 11px;
-      cursor: pointer; color: var(--deep);
-      font-size: 1rem; display: flex; align-items: center; justify-content: center;
-      transition: transform 0.15s, box-shadow 0.15s;
-      box-shadow: 0 4px 12px rgba(201,168,76,0.3);
-    }
-    #send-btn:hover { transform: scale(1.05); box-shadow: 0 6px 16px rgba(201,168,76,0.4); }
-    #send-btn:active { transform: scale(0.97); }
-    #send-btn:disabled { opacity: 0.5; cursor: default; transform: none; }
-
-    .quick-btns {
-      display: flex; flex-direction: column; gap: 0.45rem;
-    }
-    .quick-btn {
-      padding: 0.55rem 0.9rem;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      color: var(--muted);
-      font-size: 0.78rem; cursor: pointer;
-      text-align: left;
-      transition: all 0.15s;
-      display: flex; align-items: center; gap: 0.5rem;
-    }
-    .quick-btn:hover {
-      background: rgba(201,168,76,0.1);
-      border-color: rgba(201,168,76,0.4);
-      color: var(--gold-light);
-    }
-    .quick-btn .qicon { font-size: 1rem; }
-
-    /* ── Bosquejos Section ── */
-    .bosquejos-section {
-      margin-top: 2rem;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 1.8rem 2rem;
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
     }
     .bosquejos-header {
       display: flex; align-items: center; gap: 1.2rem;
@@ -499,7 +325,7 @@
     }
     .bosquejos-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr;
       gap: 1rem;
     }
     .bosquejo-card {
@@ -718,7 +544,7 @@
       .s-icon { width: 26px; height: 26px; }
       .author-org { margin-bottom: 0.6rem; }
       .promise-area { grid-column: 1; }
-      .chat-sidebar { grid-column: 2; position: sticky; }
+      .bosquejos-sidebar { grid-column: 2; position: sticky; }
     }
 
     /* ── Responsive: Mobile ── */
@@ -731,7 +557,7 @@
       .author-info { width: 100%; }
       .social-links { flex-direction: column; }
       .s-label { display: inline; }
-      .chat-sidebar { grid-column: 1; position: static; }
+      .bosquejos-sidebar { grid-column: 1; position: static; }
       .promise-area { grid-column: 1; }
     }
 
@@ -816,67 +642,42 @@
       </div>
     </main>
 
-    <!-- ── RIGHT: Counselor Chat ── -->
-    <aside class="chat-sidebar">
-      <div class="chat-sidebar-header">
-        <span class="chat-icon">🕊️</span>
-        <div class="chat-sidebar-title" id="counselor-title">Consejero Espiritual</div>
-        <div class="chat-sidebar-sub" id="counselor-sub">Basado en la promesa de hoy</div>
+    <!-- ── RIGHT: Bosquejos ── -->
+    <aside class="bosquejos-sidebar">
+      <div class="bosquejos-header">
+        <div class="bsec-icon">📖</div>
+        <div>
+          <div class="bosquejos-header-title" id="bosquejos-title">Bosquejos de la Lección de Escuela Sabática</div>
+          <div class="bosquejos-header-sub">Semana del <span id="bosquejo-week-label">...</span></div>
+        </div>
       </div>
-
-      <div id="messages"></div>
-
-      <div class="input-area">
-        <textarea id="user-input" rows="1" placeholder="Escribe tu pregunta…"></textarea>
-        <button id="send-btn" title="Enviar">➤</button>
-      </div>
-
-      <div class="quick-btns" id="quick-btns">
-        <button class="quick-btn" onclick="quickSendAnimo()">
-          <span class="qicon">🙏</span><span id="quick-animo-label"> Necesito ánimo</span>
-        </button>
-        <button class="quick-btn" onclick="quickSendVersiculos()">
-          <span class="qicon">📖</span><span id="quick-versiculos-label"> Versículos relacionados</span>
-        </button>
+      <div class="bosquejos-grid">
+        <!-- Adultos -->
+        <div class="bosquejo-card" id="card-adultos">
+          <div class="bcard-icon">🎓</div>
+          <div class="bcard-badge" id="adultos-badge">Adultos</div>
+          <div class="bcard-lesson" id="adultos-lesson-num">Cargando…</div>
+          <div class="bcard-title" id="adultos-lesson-title">…</div>
+          <div class="bcard-actions">
+            <button class="bcard-btn pdf" onclick="openBosquejoPDF('adultos')">📄 Bosquejo PDF</button>
+            <button class="bcard-btn ppt" id="adultos-ppt-btn" onclick="openBosquejoPPT('adultos')">📊 Bosquejo PPT</button>
+          </div>
+        </div>
+        <!-- Jóvenes -->
+        <div class="bosquejo-card" id="card-jovenes">
+          <div class="bcard-icon">🌟</div>
+          <div class="bcard-badge" id="jovenes-badge">Jóvenes</div>
+          <div class="bcard-lesson" id="jovenes-lesson-num">Cargando…</div>
+          <div class="bcard-title" id="jovenes-lesson-title">…</div>
+          <div class="bcard-actions">
+            <button class="bcard-btn pdf" onclick="openBosquejoPDF('jovenes')">📄 Bosquejo PDF</button>
+            <button class="bcard-btn ppt unavailable" id="jovenes-ppt-btn" title="PPT no disponible para jóvenes">📊 Bosquejo PPT</button>
+          </div>
+        </div>
       </div>
     </aside>
 
   </div><!-- /main-grid -->
-
-  <!-- ── Bosquejos Section ── -->
-  <section class="bosquejos-section">
-    <div class="bosquejos-header">
-      <div class="bsec-icon">📖</div>
-      <div>
-        <div class="bosquejos-header-title" id="bosquejos-title">Bosquejos de la Lección de Escuela Sabática</div>
-        <div class="bosquejos-header-sub">Semana del <span id="bosquejo-week-label">...</span></div>
-      </div>
-    </div>
-    <div class="bosquejos-grid">
-      <!-- Adultos -->
-      <div class="bosquejo-card" id="card-adultos">
-        <div class="bcard-icon">🎓</div>
-        <div class="bcard-badge" id="adultos-badge">Adultos</div>
-        <div class="bcard-lesson" id="adultos-lesson-num">Cargando…</div>
-        <div class="bcard-title" id="adultos-lesson-title">…</div>
-        <div class="bcard-actions">
-          <button class="bcard-btn pdf" onclick="openBosquejoPDF('adultos')">📄 Bosquejo PDF</button>
-          <button class="bcard-btn ppt" id="adultos-ppt-btn" onclick="openBosquejoPPT('adultos')">📊 Bosquejo PPT</button>
-        </div>
-      </div>
-      <!-- Jóvenes -->
-      <div class="bosquejo-card" id="card-jovenes">
-        <div class="bcard-icon">🌟</div>
-        <div class="bcard-badge" id="jovenes-badge">Jóvenes</div>
-        <div class="bcard-lesson" id="jovenes-lesson-num">Cargando…</div>
-        <div class="bcard-title" id="jovenes-lesson-title">…</div>
-        <div class="bcard-actions">
-          <button class="bcard-btn pdf" onclick="openBosquejoPDF('jovenes')">📄 Bosquejo PDF</button>
-          <button class="bcard-btn ppt unavailable" id="jovenes-ppt-btn" title="PPT no disponible para jóvenes">📊 Bosquejo PPT</button>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <!-- ── Bosquejo Modal ── -->
   <div class="bosquejo-overlay" id="bosquejo-overlay" onclick="handleOverlayClick(event)">
@@ -1024,9 +825,6 @@ function applyLangUI() {
 function setLang(lang) {
   currentLang = lang;
   sessionStorage.setItem('lang', lang);
-  chatHistory = [];
-  const msgs = document.getElementById('messages');
-  if (msgs) msgs.innerHTML = '';
   applyLangUI();
   renderToday();
   initBosquejos();
@@ -1035,7 +833,6 @@ function setLang(lang) {
 // ─── Data & State ────────────────────────────────────────────────
 let promesas = {};
 let todayPromise = null;
-let chatHistory = [];
 const ptCache = {};
 
 function getTodayKey() {
@@ -1111,7 +908,6 @@ async function renderToday() {
         <h3>${L('promise_coming')}</h3>
         <p>${L('promise_not_pub')}</p>
       </div>`;
-    addMessage('assistant', L('greeting_none')(formatDate(key)));
     return;
   }
 
@@ -1136,113 +932,11 @@ async function renderToday() {
     ${oracionText ? `<div class="oracion-block"><strong>${L('oracion_label')}</strong>${oracionText}</div>` : ''}
     <div class="autoria-block">${currentLang === 'pt' ? 'Com apreço seu amigo Tito Goicochea M.' : 'Con aprecio tu amigo Tito Goicochea M.'}</div>
   `;
-
-  addMessage('assistant', L('greeting')(verseClean.split('.')[0]));
-}
-
-// ─── Chat ─────────────────────────────────────────────────────────
-function getSystemPrompt() {
-  const key = getTodayKey();
-  const p = todayPromise;
-
-  if (currentLang === 'pt') {
-    const ctx = p
-      ? `A promessa do dia de hoje (${p.date}) é:\nTítulo: ${p.title}\nVersículo: ${p.verse}\nMensagem devocional: ${p.body}\nAção do dia: ${p.accion}\nOração: ${p.oracion}`
-      : `Hoje não há promessa disponível para ${formatDate(key)}.`;
-    return `Você é o Conselheiro Espiritual do aplicativo "Uma Promessa de Deus para Ti", criado pelo Dr. Tito Goicochea M. (NEED DSA). Você é sábio, caloroso, empático e profundamente bíblico. Sua missão é acompanhar o usuário em sua jornada espiritual.\n\n${ctx}\n\nINSTRUÇÕES IMPORTANTES:\n- Responda SEMPRE em Português do Brasil, com carinho e amor cristão\n- Ancre CADA resposta na promessa bíblica do dia e na Palavra de Deus\n- Se o usuário compartilhar uma preocupação ou dor, primeiro ouça com compaixão, depois aconselhe\n- Use formato Markdown para estruturar bem sua resposta (títulos, negritos, citações bíblicas com >)\n- Seja profundo mas conciso — máximo 3-4 seções curtas por resposta\n- Você pode citar versículos relacionados para enriquecer o conselho\n- Termine sempre com uma pergunta de reflexão ou um convite para continuar conversando\n- Se alguém expressar pensamentos de se machucar, recomende com amor buscar ajuda profissional\n- NÃO faça afirmações médicas, legais ou financeiras\n- Use emojis com moderação (🙏 📖 ✨) para dar calor sem exagerar`;
-  }
-
-  const ctx = p
-    ? `La promesa del día de hoy (${p.date}) es:\nTítulo: ${p.title}\nVersículo: ${p.verse}\nMensaje devocional: ${p.body}\nAcción del día: ${p.accion}\nOración: ${p.oracion}`
-    : `Hoy no hay promesa disponible para ${formatDate(key)}.`;
-  return `Eres el Consejero Espiritual de la app "Una Promesa de Dios para Ti", creada por el Dr. Tito Goicochea M. (NEED DSA). Eres sabio, cálido, empático y profundamente bíblico. Tu misión es acompañar al usuario en su camino espiritual.\n\n${ctx}\n\nINSTRUCCIONES IMPORTANTES:\n- Responde SIEMPRE en español, con calidez y amor cristiano\n- Ancla CADA respuesta en la promesa bíblica del día y en la Palabra de Dios\n- Si el usuario comparte una preocupación o dolor, primero escúchalo con compasión, luego aconseja\n- Usa formato Markdown para estructurar bien tu respuesta (títulos, negritas, citas bíblicas con >)\n- Sé profundo pero conciso — máximo 3-4 secciones cortas por respuesta\n- Puedes citar versículos relacionados para enriquecer el consejo\n- Cierra siempre con una pregunta de reflexión o una invitación a seguir conversando\n- Si alguien expresa pensamientos de hacerse daño, recomiéndale con amor buscar ayuda profesional\n- NO hagas afirmaciones médicas, legales ni financieras\n- Usa emojis con moderación (🙏 📖 ✨) para dar calidez sin exagerar`;
-}
-
-async function sendMessage() {
-  const input = document.getElementById('user-input');
-  const text = input.value.trim();
-  if (!text) return;
-
-  input.value = '';
-  input.style.height = 'auto';
-  addMessage('user', text);
-  chatHistory.push({ role: 'user', content: text });
-
-  const btn = document.getElementById('send-btn');
-  btn.disabled = true;
-
-  const typingId = 'typing-' + Date.now();
-  const msgDiv = document.createElement('div');
-  msgDiv.className = 'msg typing';
-  msgDiv.id = typingId;
-  const phrases = L('thinking');
-  const phrase = phrases[Math.floor(Math.random() * phrases.length)];
-  msgDiv.innerHTML = `<div class="typing-dots"><span></span><span></span><span></span></div><div class="thinking-text">${phrase}</div>`;
-  document.getElementById('messages').appendChild(msgDiv);
-  scrollMessages();
-
-  try {
-    const res = await fetch('/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ system: getSystemPrompt(), messages: chatHistory })
-    });
-    const data = await res.json();
-    document.getElementById(typingId)?.remove();
-    if (data.reply) {
-      chatHistory.push({ role: 'assistant', content: data.reply });
-      addMessage('assistant', data.reply);
-    } else {
-      addMessage('assistant', L('error_reply'));
-    }
-  } catch (e) {
-    document.getElementById(typingId)?.remove();
-    addMessage('assistant', L('error_conn'));
-  }
-  btn.disabled = false;
-}
-
-function quickSend(text) {
-  document.getElementById('user-input').value = text;
-  sendMessage();
-}
-function quickSendAnimo()     { quickSend(L('quick_animo_msg')); }
-function quickSendVersiculos(){ quickSend(L('quick_vers_msg')); }
-
-function addMessage(role, html) {
-  const div = document.createElement('div');
-  div.className = `msg ${role}`;
-  if (role === 'assistant') {
-    let rendered = html;
-    if (typeof marked !== 'undefined') {
-      try { rendered = marked.parse(html, { breaks: true, gfm: true }); } catch(e) {}
-    }
-    div.innerHTML = `<div class="label">${L('counselor_label')}</div><div class="md-content">${rendered}</div>`;
-  } else {
-    div.innerHTML = html.replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  }
-  document.getElementById('messages').appendChild(div);
-  scrollMessages();
-}
-
-function scrollMessages() {
-  const el = document.getElementById('messages');
-  el.scrollTop = el.scrollHeight;
 }
 
 function showError(msg) {
   document.getElementById('promise-card').innerHTML = `<div class="no-promise"><div class="icon">⚠️</div><h3>Error</h3><p>${msg}</p></div>`;
 }
-
-// ─── Event Listeners ──────────────────────────────────────────────
-document.getElementById('send-btn').addEventListener('click', sendMessage);
-document.getElementById('user-input').addEventListener('keydown', e => {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
-});
-document.getElementById('user-input').addEventListener('input', function() {
-  this.style.height = 'auto';
-  this.style.height = Math.min(this.scrollHeight, 120) + 'px';
-});
 
 // ─── Bosquejos ────────────────────────────────────────────────────
 const JOVENES_LESSONS = [
