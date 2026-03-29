@@ -1028,6 +1028,10 @@ function initBosquejos() {
   const lessonJ = getCurrentLesson(JOVENES_LESSONS);
   const weekLabel = formatWeekRange(lessonA.sabbath);
 
+  // Ocultar tarjeta de jóvenes en PT (no hay documentos en portugués)
+  const cardJovenes = document.getElementById('card-jovenes');
+  if (cardJovenes) cardJovenes.style.display = currentLang === 'pt' ? 'none' : '';
+
   document.getElementById('bosquejo-week-label').textContent = weekLabel;
   document.getElementById('adultos-lesson-num').textContent  = `${L('leccion')} ${lessonA.num} · ${lessonA.trimLabel}`;
   document.getElementById('adultos-lesson-title').textContent = getLessonTitle(lessonA);
