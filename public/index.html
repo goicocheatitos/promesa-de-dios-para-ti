@@ -671,7 +671,7 @@
           <div class="bcard-title" id="jovenes-lesson-title">…</div>
           <div class="bcard-actions">
             <button class="bcard-btn pdf" onclick="openBosquejoPDF('jovenes')">📄 Bosquejo PDF</button>
-            <button class="bcard-btn ppt unavailable" id="jovenes-ppt-btn" title="PPT no disponible para jóvenes">📊 Bosquejo PPT</button>
+            <button class="bcard-btn ppt" id="jovenes-ppt-btn" onclick="openBosquejoPPT('jovenes')">📊 Bosquejo PPT</button>
           </div>
         </div>
       </div>
@@ -940,20 +940,20 @@ function showError(msg) {
 
 // ─── Bosquejos ────────────────────────────────────────────────────
 const JOVENES_LESSONS = [
-  { num: 13, trimLabel: 'I Trimestre 2026',  title: 'ESPERANZA PARA LOS NO CRISTIANOS', titlePt: 'ESPERANÇA PARA OS NÃO CRISTÃOS',  sabbath: '2026-03-28', pdf: 'leccion13-IT26.pdf',  pdfPt: null,               ppt: null, pptPt: null },
-  { num: 1,  trimLabel: 'II Trimestre 2026', title: 'GOLPE DE REALIDAD',                 titlePt: 'UM CHOQUE DE REALIDADE',           sabbath: '2026-04-04', pdf: 'leccion01-IIT26.pdf', pdfPt: null,               ppt: null, pptPt: null },
-  { num: 2,  trimLabel: 'II Trimestre 2026', title: 'CONOCIENDO A DIOS',                 titlePt: 'CONHECENDO A DEUS',                sabbath: '2026-04-11', pdf: 'leccion02-IIT26.pdf', pdfPt: null,               ppt: null, pptPt: null },
-  { num: 3,  trimLabel: 'II Trimestre 2026', title: 'ORGULLO VERSUS HUMILDAD',            titlePt: 'ORGULHO VERSUS HUMILDADE',         sabbath: '2026-04-18', pdf: 'leccion03-IIT26.pdf', pdfPt: null,               ppt: null, pptPt: null },
-  { num: 4,  trimLabel: 'II Trimestre 2026', title: 'EL ROL DE LA BIBLIA',               titlePt: 'O PAPEL DA BÍBLIA',                sabbath: '2026-04-25', pdf: 'leccion04-IIT26.pdf', pdfPt: null,               ppt: null, pptPt: null },
-  { num: 5,  trimLabel: 'II Trimestre 2026', title: 'CÓMO ESTUDIAR LA BIBLIA',           titlePt: 'COMO ESTUDAR A BÍBLIA',            sabbath: '2026-05-02', pdf: 'leccion05-IIT26.pdf', pdfPt: null,               ppt: null, pptPt: null },
-  { num: 6,  trimLabel: 'II Trimestre 2026', title: 'MI VIDA DE ORACIÓN',                titlePt: 'MINHA VIDA DE ORAÇÃO',             sabbath: '2026-05-09', pdf: 'leccion06-IIT26.pdf', pdfPt: null,               ppt: null, pptPt: null },
-  { num: 7,  trimLabel: 'II Trimestre 2026', title: 'LA ORACIÓN PERSEVERANTE',           titlePt: 'A ORAÇÃO PERSEVERANTE',            sabbath: '2026-05-16', pdf: 'leccion07-IIT26.pdf', pdfPt: null,               ppt: null, pptPt: null },
-  { num: 8,  trimLabel: 'II Trimestre 2026', title: 'LA FE',                             titlePt: 'A FÉ',                             sabbath: '2026-05-23', pdf: 'leccion08-IIT26.pdf', pdfPt: null,               ppt: null, pptPt: null },
-  { num: 9,  trimLabel: 'II Trimestre 2026', title: 'EL PECADO, EL EVANGELIO Y LA LEY', titlePt: 'O PECADO, O EVANGELHO E A LEI',    sabbath: '2026-05-30', pdf: 'leccion09-IIT26.pdf', pdfPt: null,               ppt: null, pptPt: null },
-  { num: 10, trimLabel: 'II Trimestre 2026', title: 'ARREPENTIMIENTO Y PERDÓN',          titlePt: 'ARREPENDIMENTO E PERDÃO',          sabbath: '2026-06-06', pdf: 'leccion10-IIT26.pdf', pdfPt: null,               ppt: null, pptPt: null },
-  { num: 11, trimLabel: 'II Trimestre 2026', title: 'REVESES',                           titlePt: 'REVESES',                          sabbath: '2026-06-13', pdf: 'leccion11-IIT26.pdf', pdfPt: null,               ppt: null, pptPt: null },
-  { num: 12, trimLabel: 'II Trimestre 2026', title: 'COMPÁRTELO',                        titlePt: 'COMPARTILHE',                      sabbath: '2026-06-20', pdf: 'leccion12-IIT26.pdf', pdfPt: null,               ppt: null, pptPt: null },
-  { num: 13, trimLabel: 'II Trimestre 2026', title: 'HACIA LA ETERNIDAD',                titlePt: 'RUMO À ETERNIDADE',                sabbath: '2026-06-27', pdf: 'leccion13-IIT26.pdf', pdfPt: null,               ppt: null, pptPt: null },
+  { num: 13, trimLabel: 'I Trimestre 2026',  title: 'ESPERANZA PARA LOS NO CRISTIANOS', titlePt: 'ESPERANÇA PARA OS NÃO CRISTÃOS',  sabbath: '2026-03-28', pdf: 'leccion13-IT26.pdf',  pdfPt: null, ppt: null,                   pptPt: null },
+  { num: 1,  trimLabel: 'II Trimestre 2026', title: 'GOLPE DE REALIDAD',                 titlePt: 'UM CHOQUE DE REALIDADE',           sabbath: '2026-04-04', pdf: 'leccion01-IIT26.pdf', pdfPt: null, ppt: 'leccion01-IIT26.pptx', pptPt: null },
+  { num: 2,  trimLabel: 'II Trimestre 2026', title: 'CONOCIENDO A DIOS',                 titlePt: 'CONHECENDO A DEUS',                sabbath: '2026-04-11', pdf: 'leccion02-IIT26.pdf', pdfPt: null, ppt: 'leccion02-IIT26.pptx', pptPt: null },
+  { num: 3,  trimLabel: 'II Trimestre 2026', title: 'ORGULLO VERSUS HUMILDAD',            titlePt: 'ORGULHO VERSUS HUMILDADE',         sabbath: '2026-04-18', pdf: 'leccion03-IIT26.pdf', pdfPt: null, ppt: 'leccion03-IIT26.pptx', pptPt: null },
+  { num: 4,  trimLabel: 'II Trimestre 2026', title: 'EL ROL DE LA BIBLIA',               titlePt: 'O PAPEL DA BÍBLIA',                sabbath: '2026-04-25', pdf: 'leccion04-IIT26.pdf', pdfPt: null, ppt: 'leccion04-IIT26.pptx', pptPt: null },
+  { num: 5,  trimLabel: 'II Trimestre 2026', title: 'CÓMO ESTUDIAR LA BIBLIA',           titlePt: 'COMO ESTUDAR A BÍBLIA',            sabbath: '2026-05-02', pdf: 'leccion05-IIT26.pdf', pdfPt: null, ppt: 'leccion05-IIT26.pptx', pptPt: null },
+  { num: 6,  trimLabel: 'II Trimestre 2026', title: 'MI VIDA DE ORACIÓN',                titlePt: 'MINHA VIDA DE ORAÇÃO',             sabbath: '2026-05-09', pdf: 'leccion06-IIT26.pdf', pdfPt: null, ppt: 'leccion06-IIT26.pptx', pptPt: null },
+  { num: 7,  trimLabel: 'II Trimestre 2026', title: 'LA ORACIÓN PERSEVERANTE',           titlePt: 'A ORAÇÃO PERSEVERANTE',            sabbath: '2026-05-16', pdf: 'leccion07-IIT26.pdf', pdfPt: null, ppt: 'leccion07-IIT26.pptx', pptPt: null },
+  { num: 8,  trimLabel: 'II Trimestre 2026', title: 'LA FE',                             titlePt: 'A FÉ',                             sabbath: '2026-05-23', pdf: 'leccion08-IIT26.pdf', pdfPt: null, ppt: 'leccion08-IIT26.pptx', pptPt: null },
+  { num: 9,  trimLabel: 'II Trimestre 2026', title: 'EL PECADO, EL EVANGELIO Y LA LEY', titlePt: 'O PECADO, O EVANGELHO E A LEI',    sabbath: '2026-05-30', pdf: 'leccion09-IIT26.pdf', pdfPt: null, ppt: 'leccion09-IIT26.pptx', pptPt: null },
+  { num: 10, trimLabel: 'II Trimestre 2026', title: 'ARREPENTIMIENTO Y PERDÓN',          titlePt: 'ARREPENDIMENTO E PERDÃO',          sabbath: '2026-06-06', pdf: 'leccion10-IIT26.pdf', pdfPt: null, ppt: 'leccion10-IIT26.pptx', pptPt: null },
+  { num: 11, trimLabel: 'II Trimestre 2026', title: 'REVESES',                           titlePt: 'REVESES',                          sabbath: '2026-06-13', pdf: 'leccion11-IIT26.pdf', pdfPt: null, ppt: 'leccion11-IIT26.pptx', pptPt: null },
+  { num: 12, trimLabel: 'II Trimestre 2026', title: 'COMPÁRTELO',                        titlePt: 'COMPARTILHE',                      sabbath: '2026-06-20', pdf: 'leccion12-IIT26.pdf', pdfPt: null, ppt: 'leccion12-IIT26.pptx', pptPt: null },
+  { num: 13, trimLabel: 'II Trimestre 2026', title: 'HACIA LA ETERNIDAD',                titlePt: 'RUMO À ETERNIDADE',                sabbath: '2026-06-27', pdf: 'leccion13-IIT26.pdf', pdfPt: null, ppt: 'leccion13-IIT26.pptx', pptPt: null },
 ];
 
 const ADULTOS_LESSONS = [
@@ -1062,7 +1062,8 @@ function openBosquejoPPT(type) {
   if (!pptFile) return;
 
   const pptDir    = (usePt && lesson.pptPt) ? 'ppt-pt' : 'ppt';
-  const pptRelUrl = `/bosquejos/adultos/${pptDir}/${pptFile}`;
+  const pptBase   = isAdultos ? 'adultos' : 'jovenes';
+  const pptRelUrl = `/bosquejos/${pptBase}/${pptDir}/${pptFile}`;
   const viewerUrl = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(SITE_URL + pptRelUrl)}`;
 
   const badge = isAdultos ? L('adultos') : L('jovenes');
@@ -1083,16 +1084,27 @@ function openBosquejoPPT(type) {
 
 function initBosquejoBtns() {
   const lessonA = getCurrentLesson(ADULTOS_LESSONS);
+  const lessonJ = getCurrentLesson(JOVENES_LESSONS);
   const usePt   = currentLang === 'pt';
-  const hasPpt  = usePt ? lessonA.pptPt : lessonA.ppt;
-  const pptBtn  = document.getElementById('adultos-ppt-btn');
 
-  if (!hasPpt) {
-    pptBtn.classList.add('unavailable');
-    pptBtn.title = L('ppt_unavailable');
+  const pptBtnA = document.getElementById('adultos-ppt-btn');
+  const hasPptA = usePt ? lessonA.pptPt : lessonA.ppt;
+  if (!hasPptA) {
+    pptBtnA.classList.add('unavailable');
+    pptBtnA.title = L('ppt_unavailable');
   } else {
-    pptBtn.classList.remove('unavailable');
-    pptBtn.title = L('ppt_title');
+    pptBtnA.classList.remove('unavailable');
+    pptBtnA.title = L('ppt_title');
+  }
+
+  const pptBtnJ = document.getElementById('jovenes-ppt-btn');
+  const hasPptJ = usePt ? lessonJ.pptPt : lessonJ.ppt;
+  if (!hasPptJ) {
+    pptBtnJ.classList.add('unavailable');
+    pptBtnJ.title = L('ppt_unavailable');
+  } else {
+    pptBtnJ.classList.remove('unavailable');
+    pptBtnJ.title = L('ppt_title');
   }
 
   // Update card button texts
