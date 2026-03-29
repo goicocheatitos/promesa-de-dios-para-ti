@@ -1134,7 +1134,7 @@ async function renderToday() {
     <div class="body-text">${bodyParas}</div>
     ${accionText ? `<div class="accion-block"><strong>${L('accion_label')}</strong>${accionText}</div>` : ''}
     ${oracionText ? `<div class="oracion-block"><strong>${L('oracion_label')}</strong>${oracionText}</div>` : ''}
-    <div class="autoria-block">Con aprecio tu amigo Tito Goicochea M.</div>
+    <div class="autoria-block">${currentLang === 'pt' ? 'Com apreço seu amigo Tito Goicochea M.' : 'Con aprecio tu amigo Tito Goicochea M.'}</div>
   `;
 
   addMessage('assistant', L('greeting')(verseClean.split('.')[0]));

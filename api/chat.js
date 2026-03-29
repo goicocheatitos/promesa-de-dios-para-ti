@@ -25,7 +25,7 @@ export default async function handler(req, res) {
   try {
     const response = await client.messages.create({
       model: "claude-opus-4-5",
-      max_tokens: 1200,
+      max_tokens: 4000,
       system: system || "Eres un consejero espiritual cristiano sabio y empático.",
       messages: messages.slice(-10),
     });
