@@ -869,22 +869,45 @@ async function translatePromise(promise) {
     try { ptCache[key] = JSON.parse(stored); return ptCache[key]; } catch(e) {}
   }
   try {
-    const payload = { title: promise.title, verse: promise.verse, body: promise.body, accion: promise.accion, oracion: promise.oracion };
+    const userMsg =
+      'Traduza cada campo para Português do Brasil. Use exatamente estas etiquetas:\n' +
+      '<TITLE>título traduzido</TITLE>\n' +
+      '<VERSE>versículo traduzido</VERSE>\n' +
+      '<BODY>corpo traduzido</BODY>\n' +
+      '<ACCION>ação traduzida</ACCION>\n' +
+      '<ORACION>oração traduzida</ORACION>\n\n' +
+      'Campos originais:\n' +
+      'TITLE: ' + promise.title + '\n' +
+      'VERSE: ' + promise.verse + '\n' +
+      'BODY: ' + promise.body + '\n' +
+      'ACCION: ' + promise.accion + '\n' +
+      'ORACION: ' + promise.oracion;
+
     const res = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        system: 'Você é um tradutor de conteúdo devocional cristão. Traduza para Português do Brasil. Responda SOMENTE com JSON válido, sem markdown, sem explicações, sem texto fora do JSON.',
-        messages: [{ role: 'user', content: 'Traduza cada campo para Português do Brasil e retorne exatamente neste formato JSON (sem nenhum texto fora das chaves):\n{"title":"...","verse":"...","body":"...","accion":"...","oracion":"..."}\n\nDados originais:\n' + JSON.stringify(payload) }]
+        system: 'Você é um tradutor de conteúdo devocional cristão adventista. Traduza para Português do Brasil mantendo o tom espiritual e literário. Responda SOMENTE com as etiquetas solicitadas, sem texto adicional fora delas.',
+        messages: [{ role: 'user', content: userMsg }]
       })
     });
     const data = await res.json();
-    let txt = (data.reply || '').trim();
-    // Extract JSON robustly
-    const jsonMatch = txt.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) throw new Error('No JSON found in response');
-    const translated = JSON.parse(jsonMatch[0]);
-    if (!translated.title || !translated.verse) throw new Error('Incomplete translation');
+    const txt = (data.reply || '').trim();
+    const get = (tag) => {
+      const m = txt.match(new RegExp('<' + tag + '>[\\s\\S]*?<\\/' + tag + '>'));
+      return m ? m[0].replace('<' + tag + '>', '').replace('</' + tag + '>', '').trim() : null;
+    };
+    const title   = get('TITLE');
+    const body    = get('BODY');
+    if (!title || !body) throw new Error('Incomplete translation: ' + txt.substring(0, 100));
+    const translated = {
+      ...promise,
+      title,
+      verse:   get('VERSE')  || promise.verse,
+      body,
+      accion:  get('ACCION') || promise.accion,
+      oracion: get('ORACION')|| promise.oracion,
+    };
     ptCache[key] = translated;
     sessionStorage.setItem('pt_' + key, JSON.stringify(translated));
     return translated;
