@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://promesa-de-dios-para-ti.vercel.app/sitemap.xml
