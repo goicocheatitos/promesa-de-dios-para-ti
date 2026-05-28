@@ -873,6 +873,7 @@ function setLang(lang) {
 
 // ─── Data & State ────────────────────────────────────────────────
 let promesas = {};
+let promesas_pt = {};
 let todayPromise = null;
 const ptCache = {};
 
@@ -894,78 +895,38 @@ function formatDate(key) {
 // ─── Load Promises ────────────────────────────────────────────────
 async function loadPromesas() {
   try {
-    const res = await fetch('./promesas.json');
-    promesas = await res.json();
+    const [resEs, resPt] = await Promise.allSettled([
+      fetch('./promesas.json'),
+      fetch('./promesas_pt.json'),
+    ]);
+    if (resEs.status === 'fulfilled' && resEs.value.ok) {
+      promesas = await resEs.value.json();
+    } else {
+      throw new Error('No se pudo cargar promesas.json');
+    }
+    if (resPt.status === 'fulfilled' && resPt.value.ok) {
+      promesas_pt = await resPt.value.json();
+    }
     renderToday();
   } catch (e) {
     showError(L('error_load'));
   }
 }
 
-async function translatePromise(promise) {
-  const key = getTodayKey();
-  if (ptCache[key]) return ptCache[key];
-  const stored = sessionStorage.getItem('pt_' + key);
-  if (stored) {
-    try { ptCache[key] = JSON.parse(stored); return ptCache[key]; } catch(e) {}
-  }
-  try {
-    const userMsg =
-      'Traduza cada campo para Português do Brasil. Use exatamente estas etiquetas:\n' +
-      '<TITLE>título traduzido</TITLE>\n' +
-      '<VERSE>versículo traduzido</VERSE>\n' +
-      '<BODY>corpo traduzido</BODY>\n' +
-      '<ACCION>ação traduzida</ACCION>\n' +
-      '<ORACION>oração traduzida</ORACION>\n\n' +
-      'Campos originais:\n' +
-      'TITLE: ' + promise.title + '\n' +
-      'VERSE: ' + promise.verse + '\n' +
-      'BODY: ' + promise.body + '\n' +
-      'ACCION: ' + promise.accion + '\n' +
-      'ORACION: ' + promise.oracion;
-
-    const res = await fetch('/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        system: 'Você é um tradutor de conteúdo devocional cristão adventista. Traduza para Português do Brasil mantendo o tom espiritual e literário. Responda SOMENTE com as etiquetas solicitadas, sem texto adicional fora delas.',
-        messages: [{ role: 'user', content: userMsg }]
-      })
-    });
-    const data = await res.json();
-    const txt = (data.reply || '').trim();
-    const get = (tag) => {
-      const m = txt.match(new RegExp('<' + tag + '>[\\s\\S]*?<\\/' + tag + '>'));
-      return m ? m[0].replace('<' + tag + '>', '').replace('</' + tag + '>', '').trim() : null;
-    };
-    const title   = get('TITLE');
-    const body    = get('BODY');
-    if (!title || !body) throw new Error('Incomplete translation: ' + txt.substring(0, 100));
-    const translated = {
-      ...promise,
-      title,
-      verse:   get('VERSE')  || promise.verse,
-      body,
-      accion:  get('ACCION') || promise.accion,
-      oracion: get('ORACION')|| promise.oracion,
-    };
-    ptCache[key] = translated;
-    sessionStorage.setItem('pt_' + key, JSON.stringify(translated));
-    return translated;
-  } catch(e) {
-    console.warn('Translation failed:', e);
-    return promise;
-  }
+function getPromiseForLang(key) {
+  if (currentLang === 'pt' && promesas_pt[key]) return promesas_pt[key];
+  return promesas[key] || null;
 }
 
-async function renderToday() {
+function renderToday() {
   const key = getTodayKey();
   document.getElementById('today-label').textContent = formatDate(key);
   todayPromise = promesas[key] || null;
 
   const card = document.getElementById('promise-card');
+  const p = getPromiseForLang(key);
 
-  if (!todayPromise) {
+  if (!p) {
     card.innerHTML = `
       <div class="no-promise">
         <div class="icon">🌿</div>
@@ -975,18 +936,13 @@ async function renderToday() {
     return;
   }
 
-  card.innerHTML = `<div class="no-promise"><div class="icon">✦</div><h3>${L('loading_promise')}</h3></div>`;
-
-  let p = todayPromise;
-  if (currentLang === 'pt') p = await translatePromise(todayPromise);
-
-  const verseClean = p.verse.replace(/^[«""]|[»""]$/g, '');
-  const bodyParas = p.body.split('\n\n')
+  const verseClean = (p.verse || '').replace(/^[«""]|[»""]$/g, '');
+  const bodyParas = (p.body || '').split('\n\n')
     .filter(s => s.trim())
     .map(s => `<p>${s.trim()}</p>`)
     .join('');
-  const accionText = p.accion.replace(/^Acción del día:\s*/i, '').replace(/^Ação do dia:\s*/i, '');
-  const oracionText = p.oracion.replace(/^Tu oración:\s*/i, '').replace(/^Sua oração:\s*/i, '');
+  const accionText = (p.accion || '').replace(/^Acción del día:\s*/i, '').replace(/^Ação do dia:\s*/i, '');
+  const oracionText = (p.oracion || '').replace(/^Tu oración:\s*/i, '').replace(/^Sua oração:\s*/i, '');
 
   card.innerHTML = `
     <div class="card-title">${p.title}</div>
