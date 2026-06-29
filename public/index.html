@@ -982,6 +982,7 @@ function pickVoice() {
 
   const score = (v) => {
     const n = v.name.toLowerCase();
+    const lang = (v.lang || '').toLowerCase();
     let s = 0;
     if (ROBOTIC_VOICES.some(r => n.includes(r))) s -= 100;            // evita voces robóticas
     if (/natural|neural|online|premium|enhanced|siri/.test(n)) s += 50; // alta calidad explícita
@@ -989,6 +990,10 @@ function pickVoice() {
     if (v.localService === false) s += 12;                            // online suele sonar mejor
     if (females.some(f => n.includes(f)) || /\bfemale\b|femenino|feminino|mujer|mulher/.test(n)) s += 30; // preferencia femenina
     if (MALE_NAMES.some(m => n.includes(m)) || /\bmale\b|masculino/.test(n)) s -= 40; // evita masculinas
+    if (currentLang === 'es') {                                       // acento latinoamericano > España
+      if (/-(mx|us|419|co|ar|pe|cl|ve|ec|bo|py|uy|gt|cr|pa|do|hn|ni|sv)\b/.test(lang)) s += 40;
+      if (lang === 'es-es' || lang === 'es') s -= 25;
+    }
     return s;
   };
 
@@ -1047,7 +1052,7 @@ function speakNext(voice) {
   const u = new SpeechSynthesisUtterance(audioChunks[audioIndex]);
   u.lang = currentLang === 'pt' ? 'pt-BR' : 'es-ES';
   if (voice) u.voice = voice;
-  u.rate = 0.8; u.pitch = 1.12; u.volume = 1;
+  u.rate = 0.72; u.pitch = 1.08; u.volume = 1;
   u.onend = () => { audioIndex++; if (audioState !== 'idle') speakNext(voice); };
   u.onerror = () => { audioIndex++; if (audioState === 'playing') speakNext(voice); };
   window.speechSynthesis.speak(u);
