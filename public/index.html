@@ -142,10 +142,10 @@
       text-transform: uppercase;
     }
 
-    /* ── Main 3-column grid ── */
+    /* ── Main 2-column grid ── */
     .main-grid {
       display: grid;
-      grid-template-columns: 210px 1fr 370px;
+      grid-template-columns: 210px 1fr;
       gap: 1.5rem;
       align-items: start;
     }
@@ -566,7 +566,7 @@
     /* ── Responsive: Tablet ── */
     @media (max-width: 950px) {
       .main-grid {
-        grid-template-columns: 1fr 320px;
+        grid-template-columns: 1fr;
         grid-template-rows: auto auto;
       }
       .author-sidebar {
@@ -585,7 +585,6 @@
       .s-icon { width: 26px; height: 26px; }
       .author-org { margin-bottom: 0.6rem; }
       .promise-area { grid-column: 1; }
-      .bosquejos-sidebar { grid-column: 2; position: sticky; }
     }
 
     /* ── Responsive: Mobile ── */
@@ -598,7 +597,6 @@
       .author-info { width: 100%; }
       .social-links { flex-direction: column; }
       .s-label { display: inline; }
-      .bosquejos-sidebar { grid-column: 1; position: static; }
       .promise-area { grid-column: 1; }
     }
 
@@ -683,62 +681,7 @@
       </div>
     </main>
 
-    <!-- ── RIGHT: Bosquejos ── -->
-    <aside class="bosquejos-sidebar">
-      <div class="bosquejos-header">
-        <div class="bsec-icon">📖</div>
-        <div>
-          <div class="bosquejos-header-title" id="bosquejos-title">Bosquejos de la Lección de Escuela Sabática</div>
-          <div class="bosquejos-header-sub">Semana del <span id="bosquejo-week-label">...</span></div>
-        </div>
-      </div>
-      <div class="bosquejos-grid">
-        <!-- Adultos -->
-        <div class="bosquejo-card" id="card-adultos">
-          <div class="bcard-icon">🎓</div>
-          <div class="bcard-badge" id="adultos-badge">Adultos</div>
-          <div class="bcard-lesson" id="adultos-lesson-num">Cargando…</div>
-          <div class="bcard-title" id="adultos-lesson-title">…</div>
-          <div class="bcard-actions">
-            <button class="bcard-btn pdf" onclick="openBosquejoPDF('adultos')">📄 Bosquejo PDF</button>
-            <button class="bcard-btn ppt" id="adultos-ppt-btn" onclick="openBosquejoPPT('adultos')">📊 Bosquejo PPT</button>
-          </div>
-        </div>
-        <!-- Jóvenes -->
-        <div class="bosquejo-card" id="card-jovenes">
-          <div class="bcard-icon">🌟</div>
-          <div class="bcard-badge" id="jovenes-badge">Jóvenes</div>
-          <div class="bcard-lesson" id="jovenes-lesson-num">Cargando…</div>
-          <div class="bcard-title" id="jovenes-lesson-title">…</div>
-          <div class="bcard-actions">
-            <button class="bcard-btn pdf" onclick="openBosquejoPDF('jovenes')">📄 Bosquejo PDF</button>
-            <button class="bcard-btn ppt" id="jovenes-ppt-btn" onclick="openBosquejoPPT('jovenes')">📊 Bosquejo PPT</button>
-          </div>
-        </div>
-      </div>
-    </aside>
-
   </div><!-- /main-grid -->
-
-  <!-- ── Bosquejo Modal ── -->
-  <div class="bosquejo-overlay" id="bosquejo-overlay" onclick="handleOverlayClick(event)">
-    <div class="bosquejo-modal" id="bosquejo-modal">
-      <div class="bmodal-header">
-        <div>
-          <div class="bmodal-badge" id="bmodal-badge">Adultos · II Trimestre 2026</div>
-          <div class="bmodal-title" id="bmodal-title">Lección 1 · EVALÚATE</div>
-          <div class="bmodal-date" id="bmodal-date">Para el Sábado 4 de abril de 2026</div>
-        </div>
-        <button class="bmodal-close" onclick="closeBosquejo()">✕</button>
-      </div>
-      <div class="bmodal-actions">
-        <a class="bmodal-btn pdf" id="bmodal-download-btn" href="#" download>📄 Descargar PDF</a>
-      </div>
-      <div class="bmodal-viewer">
-        <iframe id="bmodal-iframe" src="" title="Bosquejo de la lección"></iframe>
-      </div>
-    </div>
-  </div>
 
   <footer>
     <p class="author">✦ Dr. Tito Goicochea M. · NEED DSA ✦</p>
@@ -848,9 +791,6 @@ function applyLangUI() {
   setText('sigueme-label',       L('sigueme_label'));
   setText('counselor-title',     L('counselor_title'));
   setText('counselor-sub',       L('counselor_sub'));
-  setText('bosquejos-title',     L('bosquejos_title'));
-  setText('adultos-badge',       L('adultos'));
-  setText('jovenes-badge',       L('jovenes'));
   setText('footer-msg',          L('footer_msg'));
   setText('quick-animo-label',   ' ' + L('quick_animo_text'));
   setText('quick-versiculos-label', ' ' + L('quick_vers_text'));
@@ -868,7 +808,6 @@ function setLang(lang) {
   sessionStorage.setItem('lang', lang);
   applyLangUI();
   renderToday();
-  initBosquejos();
 }
 
 // ─── Data & State ────────────────────────────────────────────────
@@ -958,205 +897,9 @@ function showError(msg) {
   document.getElementById('promise-card').innerHTML = `<div class="no-promise"><div class="icon">⚠️</div><h3>Error</h3><p>${msg}</p></div>`;
 }
 
-// ─── Bosquejos ────────────────────────────────────────────────────
-const JOVENES_LESSONS = [
-  { num: 13, trimLabel: 'I Trimestre 2026',  title: 'ESPERANZA PARA LOS NO CRISTIANOS', titlePt: 'ESPERANÇA PARA OS NÃO CRISTÃOS',  sabbath: '2026-03-28', pdf: 'leccion13-IT26.pdf',  pdfPt: null, ppt: null,                   pptPt: null },
-  { num: 1,  trimLabel: 'II Trimestre 2026', title: 'GOLPE DE REALIDAD',                 titlePt: 'UM CHOQUE DE REALIDADE',           sabbath: '2026-04-04', pdf: 'leccion01-IIT26.pdf', pdfPt: null, ppt: 'leccion01-IIT26.pptx', pptPt: null },
-  { num: 2,  trimLabel: 'II Trimestre 2026', title: 'CONOCIENDO A DIOS',                 titlePt: 'CONHECENDO A DEUS',                sabbath: '2026-04-11', pdf: 'leccion02-IIT26.pdf', pdfPt: null, ppt: 'leccion02-IIT26.pptx', pptPt: null },
-  { num: 3,  trimLabel: 'II Trimestre 2026', title: 'ORGULLO VERSUS HUMILDAD',            titlePt: 'ORGULHO VERSUS HUMILDADE',         sabbath: '2026-04-18', pdf: 'leccion03-IIT26.pdf', pdfPt: null, ppt: 'leccion03-IIT26.pptx', pptPt: null },
-  { num: 4,  trimLabel: 'II Trimestre 2026', title: 'EL ROL DE LA BIBLIA',               titlePt: 'O PAPEL DA BÍBLIA',                sabbath: '2026-04-25', pdf: 'leccion04-IIT26.pdf', pdfPt: null, ppt: 'leccion04-IIT26.pptx', pptPt: null },
-  { num: 5,  trimLabel: 'II Trimestre 2026', title: 'CÓMO ESTUDIAR LA BIBLIA',           titlePt: 'COMO ESTUDAR A BÍBLIA',            sabbath: '2026-05-02', pdf: 'leccion05-IIT26.pdf', pdfPt: null, ppt: 'leccion05-IIT26.pptx', pptPt: null },
-  { num: 6,  trimLabel: 'II Trimestre 2026', title: 'MI VIDA DE ORACIÓN',                titlePt: 'MINHA VIDA DE ORAÇÃO',             sabbath: '2026-05-09', pdf: 'leccion06-IIT26.pdf', pdfPt: null, ppt: 'leccion06-IIT26.pptx', pptPt: null },
-  { num: 7,  trimLabel: 'II Trimestre 2026', title: 'LA ORACIÓN PERSEVERANTE',           titlePt: 'A ORAÇÃO PERSEVERANTE',            sabbath: '2026-05-16', pdf: 'leccion07-IIT26.pdf', pdfPt: null, ppt: 'leccion07-IIT26.pptx', pptPt: null },
-  { num: 8,  trimLabel: 'II Trimestre 2026', title: 'LA FE',                             titlePt: 'A FÉ',                             sabbath: '2026-05-23', pdf: 'leccion08-IIT26.pdf', pdfPt: null, ppt: 'leccion08-IIT26.pptx', pptPt: null },
-  { num: 9,  trimLabel: 'II Trimestre 2026', title: 'EL PECADO, EL EVANGELIO Y LA LEY', titlePt: 'O PECADO, O EVANGELHO E A LEI',    sabbath: '2026-05-30', pdf: 'leccion09-IIT26.pdf', pdfPt: null, ppt: 'leccion09-IIT26.pptx', pptPt: null },
-  { num: 10, trimLabel: 'II Trimestre 2026', title: 'ARREPENTIMIENTO Y PERDÓN',          titlePt: 'ARREPENDIMENTO E PERDÃO',          sabbath: '2026-06-06', pdf: 'leccion10-IIT26.pdf', pdfPt: null, ppt: 'leccion10-IIT26.pptx', pptPt: null },
-  { num: 11, trimLabel: 'II Trimestre 2026', title: 'REVESES',                           titlePt: 'REVESES',                          sabbath: '2026-06-13', pdf: 'leccion11-IIT26.pdf', pdfPt: null, ppt: 'leccion11-IIT26.pptx', pptPt: null },
-  { num: 12, trimLabel: 'II Trimestre 2026', title: 'COMPÁRTELO',                        titlePt: 'COMPARTILHE',                      sabbath: '2026-06-20', pdf: 'leccion12-IIT26.pdf', pdfPt: null, ppt: 'leccion12-IIT26.pptx', pptPt: null },
-  { num: 13, trimLabel: 'II Trimestre 2026', title: 'HACIA LA ETERNIDAD',                titlePt: 'RUMO À ETERNIDADE',                sabbath: '2026-06-27', pdf: 'leccion13-IIT26.pdf', pdfPt: null, ppt: 'leccion13-IIT26.pptx', pptPt: null },
-];
-
-const ADULTOS_LESSONS = [
-  { num: 13, trimLabel: 'I Trimestre 2026',  title: 'PERMANECER EN TODA LA VOLUNTAD DE DIOS', titlePt: 'PERMANECER EM TODA A VONTADE DE DEUS', sabbath: '2026-03-28', pdf: 'leccion13-IT26.pdf',  pdfPt: 'leccion13-IT26.pdf', ppt: 'leccion13-IT26.pptx',  pptPt: null },
-  { num: 1,  trimLabel: 'II Trimestre 2026', title: 'EVALÚATE',                               titlePt: 'AVALIE-SE',                            sabbath: '2026-04-04', pdf: 'leccion01-IIT26.pdf', pdfPt: 'leccion01-IIT26.pdf', ppt: 'leccion01-IIT26.pptx', pptPt: 'leccion01-IIT26.pptx' },
-  { num: 2,  trimLabel: 'II Trimestre 2026', title: 'CONOCIENDO A DIOS',                      titlePt: 'CONHECENDO A DEUS',                    sabbath: '2026-04-11', pdf: 'leccion02-IIT26.pdf', pdfPt: 'leccion02-IIT26.pdf', ppt: 'leccion02-IIT26.pptx', pptPt: 'leccion02-IIT26.pptx' },
-  { num: 3,  trimLabel: 'II Trimestre 2026', title: 'ORGULLO VERSUS HUMILDAD',                titlePt: 'ORGULHO VERSUS HUMILDADE',             sabbath: '2026-04-18', pdf: 'leccion03-IIT26.pdf', pdfPt: 'leccion03-IIT26.pdf', ppt: 'leccion03-IIT26.pptx', pptPt: 'leccion03-IIT26.pptx' },
-  { num: 4,  trimLabel: 'II Trimestre 2026', title: 'EL ROL DE LA BIBLIA',                    titlePt: 'O PAPEL DA BÍBLIA',                    sabbath: '2026-04-25', pdf: 'leccion04-IIT26.pdf', pdfPt: 'leccion04-IIT26.pdf', ppt: 'leccion04-IIT26.pptx', pptPt: 'leccion04-IIT26.pptx' },
-  { num: 5,  trimLabel: 'II Trimestre 2026', title: 'CÓMO ESTUDIAR LA BIBLIA',                titlePt: 'COMO ESTUDAR A BÍBLIA',                sabbath: '2026-05-02', pdf: 'leccion05-IIT26.pdf', pdfPt: 'leccion05-IIT26.pdf', ppt: 'leccion05-IIT26.pptx', pptPt: 'leccion05-IIT26.pptx' },
-  { num: 6,  trimLabel: 'II Trimestre 2026', title: 'GUERREROS DE ORACIÓN',                   titlePt: 'GUERREIROS DE ORAÇÃO',                 sabbath: '2026-05-09', pdf: 'leccion06-IIT26.pdf', pdfPt: 'leccion06-IIT26.pdf', ppt: 'leccion06-IIT26.pptx', pptPt: 'leccion06-IIT26.pptx' },
-  { num: 7,  trimLabel: 'II Trimestre 2026', title: 'LA ORACIÓN',                             titlePt: 'A ORAÇÃO',                             sabbath: '2026-05-16', pdf: 'leccion07-IIT26.pdf', pdfPt: 'leccion07-IIT26.pdf', ppt: 'leccion07-IIT26.pptx', pptPt: 'leccion07-IIT26.pptx' },
-  { num: 8,  trimLabel: 'II Trimestre 2026', title: 'LA FE',                                  titlePt: 'A FÉ',                                 sabbath: '2026-05-23', pdf: 'leccion08-IIT26.pdf', pdfPt: 'leccion08-IIT26.pdf', ppt: 'leccion08-IIT26.pptx', pptPt: 'leccion08-IIT26.pptx' },
-  { num: 9,  trimLabel: 'II Trimestre 2026', title: 'EL PECADO, EL EVANGELIO Y LA LEY',       titlePt: 'O PECADO, O EVANGELHO E A LEI',        sabbath: '2026-05-30', pdf: 'leccion09-IIT26.pdf', pdfPt: 'leccion09-IIT26.pdf', ppt: 'leccion09-IIT26.pptx', pptPt: 'leccion09-IIT26.pptx' },
-  { num: 10, trimLabel: 'II Trimestre 2026', title: 'ARREPENTIMIENTO Y PERDÓN',               titlePt: 'ARREPENDIMENTO E PERDÃO',              sabbath: '2026-06-06', pdf: 'leccion10-IIT26.pdf', pdfPt: 'leccion10-IIT26.pdf', ppt: 'leccion10-IIT26.pptx', pptPt: 'leccion10-IIT26.pptx' },
-  { num: 11, trimLabel: 'II Trimestre 2026', title: 'REVESES',                                titlePt: 'REVESES',                              sabbath: '2026-06-13', pdf: 'leccion11-IIT26.pdf', pdfPt: 'leccion11-IIT26.pdf', ppt: 'leccion11-IIT26.pptx', pptPt: 'leccion11-IIT26.pptx' },
-  { num: 12, trimLabel: 'II Trimestre 2026', title: 'COMPÁRTELO',                             titlePt: 'COMPARTILHE',                          sabbath: '2026-06-20', pdf: 'leccion12-IIT26.pdf', pdfPt: 'leccion12-IIT26.pdf', ppt: 'leccion12-IIT26.pptx', pptPt: 'leccion12-IIT26.pptx' },
-  { num: 13, trimLabel: 'II Trimestre 2026', title: 'HACIA LA ETERNIDAD',                     titlePt: 'RUMO À ETERNIDADE',                    sabbath: '2026-06-27', pdf: 'leccion13-IIT26.pdf', pdfPt: 'leccion13-IIT26.pdf', ppt: 'leccion13-IIT26.pptx', pptPt: 'leccion13-IIT26.pptx' },
-];
-
-function getCurrentLesson(lessons) {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  for (const lesson of lessons) {
-    const sabbath = new Date(lesson.sabbath + 'T00:00:00');
-    if (today <= sabbath) return lesson;
-  }
-  return lessons[lessons.length - 1];
-}
-
-function formatWeekRange(sabbathDateStr) {
-  const sabbath = new Date(sabbathDateStr + 'T00:00:00');
-  const sunday = new Date(sabbath);
-  sunday.setDate(sabbath.getDate() - 6);
-  const months = MONTHS[currentLang];
-  const sep = currentLang === 'pt' ? 'a' : 'al';
-  const dS = sunday.getDate(), mS = sunday.getMonth(), yS = sunday.getFullYear();
-  const dE = sabbath.getDate(), mE = sabbath.getMonth(), yE = sabbath.getFullYear();
-  if (mS === mE) return `${dS} ${sep} ${dE} de ${months[mE]} de ${yE}`;
-  if (yS === yE) return `${dS} de ${months[mS]} ${sep} ${dE} de ${months[mE]} de ${yE}`;
-  return `${dS} de ${months[mS]} de ${yS} ${sep} ${dE} de ${months[mE]} de ${yE}`;
-}
-
-function getLessonTitle(lesson) {
-  return (currentLang === 'pt' && lesson.titlePt) ? lesson.titlePt : lesson.title;
-}
-
-function initBosquejos() {
-  const lessonA = getCurrentLesson(ADULTOS_LESSONS);
-  const lessonJ = getCurrentLesson(JOVENES_LESSONS);
-  const weekLabel = formatWeekRange(lessonA.sabbath);
-
-  // Ocultar tarjeta de jóvenes en PT (no hay documentos en portugués)
-  const cardJovenes = document.getElementById('card-jovenes');
-  if (cardJovenes) cardJovenes.style.display = currentLang === 'pt' ? 'none' : '';
-
-  document.getElementById('bosquejo-week-label').textContent = weekLabel;
-  document.getElementById('adultos-lesson-num').textContent  = `${L('leccion')} ${lessonA.num} · ${lessonA.trimLabel}`;
-  document.getElementById('adultos-lesson-title').textContent = getLessonTitle(lessonA);
-  document.getElementById('jovenes-lesson-num').textContent  = `${L('leccion')} ${lessonJ.num} · ${lessonJ.trimLabel}`;
-  document.getElementById('jovenes-lesson-title').textContent = getLessonTitle(lessonJ);
-
-  // Badge labels
-  const adBadge = document.getElementById('adultos-badge');
-  const joBadge = document.getElementById('jovenes-badge');
-  if (adBadge) adBadge.textContent = L('adultos');
-  if (joBadge) joBadge.textContent = L('jovenes');
-
-  initBosquejoBtns();
-}
-
-const SITE_URL = 'https://promesa-de-dios-para-ti.vercel.app';
-
-function openBosquejoPDF(type) {
-  const isAdultos = type === 'adultos';
-  const lesson = isAdultos ? getCurrentLesson(ADULTOS_LESSONS) : getCurrentLesson(JOVENES_LESSONS);
-  const usePt = currentLang === 'pt';
-
-  let pdfSubPath;
-  if (isAdultos) {
-    pdfSubPath = (usePt && lesson.pdfPt)
-      ? 'bosquejos/adultos/pdf-pt/' + lesson.pdfPt
-      : 'bosquejos/adultos/pdf/'    + lesson.pdf;
-  } else {
-    pdfSubPath = 'bosquejos/jovenes/pdf/' + lesson.pdf;
-  }
-
-  const badge = isAdultos ? L('adultos') : L('jovenes');
-  document.getElementById('bmodal-badge').textContent = `${badge} · ${lesson.trimLabel}`;
-  document.getElementById('bmodal-title').textContent = `${L('leccion')} ${lesson.num} · ${getLessonTitle(lesson)}`;
-  document.getElementById('bmodal-date').textContent  = `${L('semana_del')} ${formatWeekRange(lesson.sabbath)}`;
-
-  const pdfUrl = './' + pdfSubPath;
-  const dlBtn  = document.getElementById('bmodal-download-btn');
-  dlBtn.href      = pdfUrl;
-  dlBtn.download  = pdfSubPath.split('/').pop();
-  dlBtn.textContent = L('descargar_pdf');
-  dlBtn.className = 'bmodal-btn pdf';
-
-  document.getElementById('bmodal-iframe').src = pdfUrl;
-  document.getElementById('bosquejo-overlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-
-function openBosquejoPPT(type) {
-  const isAdultos = type === 'adultos';
-  const lesson = isAdultos ? getCurrentLesson(ADULTOS_LESSONS) : getCurrentLesson(JOVENES_LESSONS);
-  const usePt = currentLang === 'pt';
-
-  const pptFile = (usePt && lesson.pptPt) ? lesson.pptPt : lesson.ppt;
-  if (!pptFile) return;
-
-  const pptDir    = (usePt && lesson.pptPt) ? 'ppt-pt' : 'ppt';
-  const pptBase   = isAdultos ? 'adultos' : 'jovenes';
-  const pptRelUrl = `/bosquejos/${pptBase}/${pptDir}/${pptFile}`;
-  const viewerUrl = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(SITE_URL + pptRelUrl)}`;
-
-  const badge = isAdultos ? L('adultos') : L('jovenes');
-  document.getElementById('bmodal-badge').textContent = `${badge} · ${lesson.trimLabel}`;
-  document.getElementById('bmodal-title').textContent = `${L('leccion')} ${lesson.num} · ${getLessonTitle(lesson)}`;
-  document.getElementById('bmodal-date').textContent  = `${L('semana_del')} ${formatWeekRange(lesson.sabbath)}`;
-
-  const dlBtn = document.getElementById('bmodal-download-btn');
-  dlBtn.href      = pptRelUrl;
-  dlBtn.download  = pptFile;
-  dlBtn.textContent = L('descargar_ppt');
-  dlBtn.className = 'bmodal-btn ppt';
-
-  document.getElementById('bmodal-iframe').src = viewerUrl;
-  document.getElementById('bosquejo-overlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-
-function initBosquejoBtns() {
-  const lessonA = getCurrentLesson(ADULTOS_LESSONS);
-  const lessonJ = getCurrentLesson(JOVENES_LESSONS);
-  const usePt   = currentLang === 'pt';
-
-  const pptBtnA = document.getElementById('adultos-ppt-btn');
-  const hasPptA = usePt ? lessonA.pptPt : lessonA.ppt;
-  if (!hasPptA) {
-    pptBtnA.classList.add('unavailable');
-    pptBtnA.title = L('ppt_unavailable');
-  } else {
-    pptBtnA.classList.remove('unavailable');
-    pptBtnA.title = L('ppt_title');
-  }
-
-  const pptBtnJ = document.getElementById('jovenes-ppt-btn');
-  const hasPptJ = usePt ? lessonJ.pptPt : lessonJ.ppt;
-  if (!hasPptJ) {
-    pptBtnJ.classList.add('unavailable');
-    pptBtnJ.title = L('ppt_unavailable');
-  } else {
-    pptBtnJ.classList.remove('unavailable');
-    pptBtnJ.title = L('ppt_title');
-  }
-
-  // Update card button texts
-  const sel = (cardId, cls) => document.querySelector(`#${cardId} .bcard-btn.${cls}`);
-  const adPdf = sel('card-adultos','pdf'), adPpt = sel('card-adultos','ppt');
-  const joPdf = sel('card-jovenes','pdf'), joPpt = sel('card-jovenes','ppt');
-  if (adPdf) adPdf.textContent = L('bosquejo_pdf');
-  if (adPpt) adPpt.textContent = L('bosquejo_ppt');
-  if (joPdf) joPdf.textContent = L('bosquejo_pdf');
-  if (joPpt) joPpt.textContent = L('bosquejo_ppt');
-}
-
-function closeBosquejo() {
-  document.getElementById('bosquejo-overlay').classList.remove('open');
-  document.getElementById('bmodal-iframe').src = '';
-  document.body.style.overflow = '';
-}
-
-function handleOverlayClick(e) {
-  if (e.target === document.getElementById('bosquejo-overlay')) closeBosquejo();
-}
-
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeBosquejo(); });
-
 // ─── Init ─────────────────────────────────────────────────────────
 applyLangUI();
 loadPromesas();
-initBosquejos();
 </script>
 </body>
 </html>
