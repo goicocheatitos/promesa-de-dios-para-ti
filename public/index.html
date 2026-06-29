@@ -1019,14 +1019,15 @@ function buildAudioText() {
     .trim();
 }
 
-// Divide en fragmentos cortos (evita el corte de ~15 s de Chrome)
+// Divide por oración (mejor entonación y pausa natural; une solo las muy cortas)
 function splitChunks(text) {
-  const sentences = text.replace(/\s+/g, ' ').match(/[^.!?\n]+[.!?]*\s*/g) || [text];
+  const sentences = text.replace(/\s+/g, ' ').match(/[^.!?…]+[.!?…]*\s*/g) || [text];
   const chunks = [];
   let cur = '';
   for (const s of sentences) {
-    if ((cur + s).length > 200 && cur) { chunks.push(cur.trim()); cur = s; }
-    else cur += s;
+    cur += s;
+    // Cierra el fragmento al final de una oración con suficiente longitud
+    if (cur.trim().length >= 60) { chunks.push(cur.trim()); cur = ''; }
   }
   if (cur.trim()) chunks.push(cur.trim());
   return chunks;
@@ -1052,7 +1053,7 @@ function speakNext(voice) {
   const u = new SpeechSynthesisUtterance(audioChunks[audioIndex]);
   u.lang = currentLang === 'pt' ? 'pt-BR' : 'es-ES';
   if (voice) u.voice = voice;
-  u.rate = 0.72; u.pitch = 1.08; u.volume = 1;
+  u.rate = 0.85; u.pitch = 1.05; u.volume = 1;
   u.onend = () => { audioIndex++; if (audioState !== 'idle') speakNext(voice); };
   u.onerror = () => { audioIndex++; if (audioState === 'playing') speakNext(voice); };
   window.speechSynthesis.speak(u);
