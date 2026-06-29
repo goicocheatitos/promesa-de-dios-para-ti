@@ -985,7 +985,7 @@ function pickVoice() {
     const lang = (v.lang || '').toLowerCase();
     let s = 0;
     if (ROBOTIC_VOICES.some(r => n.includes(r))) s -= 100;            // evita voces robóticas
-    if (/natural|neural|online|premium|enhanced|siri/.test(n)) s += 50; // alta calidad explícita
+    if (/natural|neural|online|premium|enhanced|mejorad|aprimorad|siri/.test(n)) s += 60; // alta calidad explícita (incl. "mejorada"/"aprimorada")
     if (/mónica|monica|paulina|luciana|microsoft|google/.test(n)) s += 30; // naturales conocidas
     if (v.localService === false) s += 12;                            // online suele sonar mejor
     if (females.some(f => n.includes(f)) || /\bfemale\b|femenino|feminino|mujer|mulher/.test(n)) s += 30; // preferencia femenina
