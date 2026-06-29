@@ -240,10 +240,14 @@
     /* ── Promise area (center) ── */
     .promise-area { max-width: 780px; }
 
-    /* ── Date badge ── */
+    /* ── Date badge + audio ── */
+    .promise-topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 0.8rem; flex-wrap: wrap;
+      margin-bottom: 1.2rem;
+    }
     .date-badge {
       display: flex; align-items: center; justify-content: center; gap: 0.5rem;
-      margin-bottom: 1.2rem;
       width: fit-content;
       padding: 0.4rem 1.1rem;
       border-radius: 999px;
@@ -254,6 +258,34 @@
       letter-spacing: 0.06em;
       text-transform: uppercase;
     }
+    .audio-btn {
+      display: inline-flex; align-items: center; gap: 0.45rem;
+      padding: 0.45rem 1.1rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: linear-gradient(135deg, rgba(201,168,76,0.18), rgba(100,60,200,0.18));
+      color: var(--gold-light);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8rem; font-weight: 500;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+    .audio-btn:hover {
+      background: linear-gradient(135deg, rgba(201,168,76,0.3), rgba(100,60,200,0.3));
+      border-color: var(--gold);
+      transform: translateY(-1px);
+    }
+    .audio-btn.playing {
+      border-color: var(--gold);
+      box-shadow: 0 0 16px rgba(201,168,76,0.35);
+    }
+    .audio-btn.playing .audio-icon { animation: audioPulse 1.2s ease-in-out infinite; }
+    @keyframes audioPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%      { opacity: 0.6; transform: scale(1.15); }
+    }
+    .audio-icon { font-size: 1rem; line-height: 1; }
 
     /* ── Promise Card ── */
     .card {
@@ -668,9 +700,15 @@
 
     <!-- ── CENTER: Promise ── -->
     <main class="promise-area">
-      <div class="date-badge" id="date-badge">
-        <span>📅</span>
-        <span id="today-label">Cargando...</span>
+      <div class="promise-topbar">
+        <div class="date-badge" id="date-badge">
+          <span>📅</span>
+          <span id="today-label">Cargando...</span>
+        </div>
+        <button class="audio-btn" id="audio-btn" onclick="toggleAudio()" aria-label="Escuchar devocional">
+          <span class="audio-icon" id="audio-icon">🔊</span>
+          <span id="audio-label">Escuchar</span>
+        </button>
       </div>
 
       <div class="card" id="promise-card">
@@ -708,6 +746,10 @@ const LABELS = {
     promise_not_pub:    'El devocional para este día aún no ha sido publicado.<br>Puedes hacerme tus preguntas de todos modos.',
     accion_label:       '✦ Acción del día',
     oracion_label:      '🙏 Tu oración',
+    listen_label:       'Escuchar',
+    pause_label:        'Pausar',
+    resume_label:       'Reanudar',
+    audio_unsupported:  'Tu navegador no permite la lectura en audio.',
     counselor_title:    'Consejero Espiritual',
     counselor_sub:      'Basado en la promesa de hoy',
     input_placeholder:  'Escribe tu pregunta…',
@@ -745,6 +787,10 @@ const LABELS = {
     promise_not_pub:    'O devocional para este dia ainda não foi publicado.<br>Você pode me fazer suas perguntas mesmo assim.',
     accion_label:       '✦ Ação do dia',
     oracion_label:      '🙏 Sua oração',
+    listen_label:       'Ouvir',
+    pause_label:        'Pausar',
+    resume_label:       'Continuar',
+    audio_unsupported:  'Seu navegador não permite a leitura em áudio.',
     counselor_title:    'Conselheiro Espiritual',
     counselor_sub:      'Baseado na promessa de hoje',
     input_placeholder:  'Escreva sua pergunta…',
@@ -794,6 +840,7 @@ function applyLangUI() {
   setText('footer-msg',          L('footer_msg'));
   setText('quick-animo-label',   ' ' + L('quick_animo_text'));
   setText('quick-versiculos-label', ' ' + L('quick_vers_text'));
+  if (typeof audioState === 'undefined' || audioState === 'idle') setText('audio-label', L('listen_label'));
 
   const inp = document.getElementById('user-input');
   if (inp) inp.placeholder = L('input_placeholder');
@@ -858,6 +905,7 @@ function getPromiseForLang(key) {
 }
 
 function renderToday() {
+  if (typeof stopAudio === 'function') stopAudio();
   const key = getTodayKey();
   document.getElementById('today-label').textContent = formatDate(key);
   todayPromise = promesas[key] || null;
@@ -897,7 +945,128 @@ function showError(msg) {
   document.getElementById('promise-card').innerHTML = `<div class="no-promise"><div class="icon">⚠️</div><h3>Error</h3><p>${msg}</p></div>`;
 }
 
+// ─── Lectura en audio (Text-to-Speech) ───────────────────────────
+const TTS_OK = ('speechSynthesis' in window);
+let audioState = 'idle';            // idle | playing | paused
+let audioChunks = [];
+let audioIndex = 0;
+let cachedVoices = [];
+
+function loadVoices() {
+  if (TTS_OK) cachedVoices = window.speechSynthesis.getVoices() || [];
+}
+if (TTS_OK) {
+  loadVoices();
+  window.speechSynthesis.onvoiceschanged = loadVoices;
+  window.addEventListener('beforeunload', () => window.speechSynthesis.cancel());
+}
+
+// Elige la mejor voz masculina disponible para el idioma actual
+function pickVoice() {
+  const prefix = currentLang === 'pt' ? 'pt' : 'es';
+  const voices = (cachedVoices.length ? cachedVoices : (TTS_OK ? window.speechSynthesis.getVoices() : []));
+  const matching = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith(prefix));
+  // Nombres masculinos por plataforma (naturales primero, novedosas de macOS como respaldo)
+  const hints = currentLang === 'pt'
+    ? ['antônio','antonio','daniel','felipe','ricardo','júlio','julio','fábio','fabio','heitor','reed','rocko','grandpa','eddy','male','homem','masculino']
+    : ['álvaro','alvaro','jorge','juan','diego','carlos','pablo','raúl','raul','enrique','miguel','arnau','reed','rocko','grandpa','eddy','male','hombre','masculino'];
+  // 1) coincidencia explícita de género en el nombre
+  for (const key of ['male','masculino','hombre','homem']) {
+    const f = matching.find(v => v.name.toLowerCase().includes(key));
+    if (f) return f;
+  }
+  // 2) nombres masculinos conocidos
+  for (const h of hints) {
+    const found = matching.find(v => v.name.toLowerCase().includes(h));
+    if (found) return found;
+  }
+  // Respaldo: voz genérica del idioma (Google), luego cualquiera del idioma
+  return matching.find(v => v.name.toLowerCase().includes('google')) || matching[0] || null;
+}
+
+function buildAudioText() {
+  const p = getPromiseForLang(getTodayKey());
+  if (!p) return '';
+  const parts = [];
+  if (p.title) parts.push(p.title);
+  const verse = (p.verse || '').replace(/^[«"“]|[»"”]$/g, '');
+  if (verse) parts.push(verse);
+  if (p.body) parts.push(p.body);
+  const accion = (p.accion || '').replace(/^Acción del día:\s*/i, '').replace(/^Ação do dia:\s*/i, '');
+  if (accion) parts.push((currentLang === 'pt' ? 'Ação do dia. ' : 'Acción del día. ') + accion);
+  const oracion = (p.oracion || '').replace(/^Tu oración:\s*/i, '').replace(/^Sua oração:\s*/i, '');
+  if (oracion) parts.push((currentLang === 'pt' ? 'Oração. ' : 'Oración. ') + oracion);
+  // Quita caracteres hebreos/no latinos y paréntesis vacíos que confunden a la voz
+  return parts.join('. \n')
+    .replace(/[֐-׿؀-ۿ]/g, '')
+    .replace(/\(\s*\)/g, '')
+    .trim();
+}
+
+// Divide en fragmentos cortos (evita el corte de ~15 s de Chrome)
+function splitChunks(text) {
+  const sentences = text.replace(/\s+/g, ' ').match(/[^.!?\n]+[.!?]*\s*/g) || [text];
+  const chunks = [];
+  let cur = '';
+  for (const s of sentences) {
+    if ((cur + s).length > 200 && cur) { chunks.push(cur.trim()); cur = s; }
+    else cur += s;
+  }
+  if (cur.trim()) chunks.push(cur.trim());
+  return chunks;
+}
+
+function setAudioState(s) {
+  audioState = s;
+  const btn = document.getElementById('audio-btn');
+  const icon = document.getElementById('audio-icon');
+  const label = document.getElementById('audio-label');
+  if (!btn) return;
+  if (s === 'playing') {
+    icon.textContent = '⏸'; label.textContent = L('pause_label'); btn.classList.add('playing');
+  } else if (s === 'paused') {
+    icon.textContent = '▶'; label.textContent = L('resume_label'); btn.classList.remove('playing');
+  } else {
+    icon.textContent = '🔊'; label.textContent = L('listen_label'); btn.classList.remove('playing');
+  }
+}
+
+function speakNext(voice) {
+  if (audioState === 'idle' || audioIndex >= audioChunks.length) { stopAudio(); return; }
+  const u = new SpeechSynthesisUtterance(audioChunks[audioIndex]);
+  u.lang = currentLang === 'pt' ? 'pt-BR' : 'es-ES';
+  if (voice) u.voice = voice;
+  u.rate = 0.95; u.pitch = 0.9; u.volume = 1;
+  u.onend = () => { audioIndex++; if (audioState !== 'idle') speakNext(voice); };
+  u.onerror = () => { audioIndex++; if (audioState === 'playing') speakNext(voice); };
+  window.speechSynthesis.speak(u);
+}
+
+function startAudio() {
+  const text = buildAudioText();
+  if (!text) return;
+  window.speechSynthesis.cancel();
+  audioChunks = splitChunks(text);
+  audioIndex = 0;
+  setAudioState('playing');
+  speakNext(pickVoice());
+}
+
+function stopAudio() {
+  setAudioState('idle');
+  audioChunks = []; audioIndex = 0;
+  if (TTS_OK) window.speechSynthesis.cancel();
+}
+
+function toggleAudio() {
+  if (!TTS_OK) { alert(L('audio_unsupported')); return; }
+  if (audioState === 'idle') startAudio();
+  else if (audioState === 'playing') { window.speechSynthesis.pause(); setAudioState('paused'); }
+  else if (audioState === 'paused') { window.speechSynthesis.resume(); setAudioState('playing'); }
+}
+
 // ─── Init ─────────────────────────────────────────────────────────
+if (!TTS_OK) { const ab = document.getElementById('audio-btn'); if (ab) ab.style.display = 'none'; }
 applyLangUI();
 loadPromesas();
 </script>
