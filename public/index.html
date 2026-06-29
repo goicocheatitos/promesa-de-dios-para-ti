@@ -961,27 +961,38 @@ if (TTS_OK) {
   window.addEventListener('beforeunload', () => window.speechSynthesis.cancel());
 }
 
-// Elige la mejor voz masculina disponible para el idioma actual
+// Voces "de novedad"/robóticas (sobre todo macOS) que entonan mal: se evitan
+const ROBOTIC_VOICES = ['reed','rocko','eddy','flo','grandma','grandpa','sandy','shelley',
+  'bells','bubbles','boing','jester','organ','superstar','trinoids','whisper','wobble',
+  'zarvox','albert','bahh','cellos','deranged','hysterical','bad news','good news','pipe organ','ralph','fred','kathy','junior'];
+// Nombres femeninos conocidos por plataforma (voz dulce/tierna)
+const FEMALE_VOICES = {
+  es: ['mónica','monica','paulina','sabina','helena','elvira','laura','marisol','ximena','lucía','lucia','esperanza','dalia','dario','google'],
+  pt: ['luciana','francisca','maria','camila','vitória','vitoria','heloísa','heloisa','giovanna','google']
+};
+
+// Elige la voz femenina más natural y suave disponible para el idioma actual
 function pickVoice() {
   const prefix = currentLang === 'pt' ? 'pt' : 'es';
   const voices = (cachedVoices.length ? cachedVoices : (TTS_OK ? window.speechSynthesis.getVoices() : []));
   const matching = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith(prefix));
-  // Nombres masculinos por plataforma (naturales primero, novedosas de macOS como respaldo)
-  const hints = currentLang === 'pt'
-    ? ['antônio','antonio','daniel','felipe','ricardo','júlio','julio','fábio','fabio','heitor','reed','rocko','grandpa','eddy','male','homem','masculino']
-    : ['álvaro','alvaro','jorge','juan','diego','carlos','pablo','raúl','raul','enrique','miguel','arnau','reed','rocko','grandpa','eddy','male','hombre','masculino'];
-  // 1) coincidencia explícita de género en el nombre
-  for (const key of ['male','masculino','hombre','homem']) {
-    const f = matching.find(v => v.name.toLowerCase().includes(key));
-    if (f) return f;
-  }
-  // 2) nombres masculinos conocidos
-  for (const h of hints) {
-    const found = matching.find(v => v.name.toLowerCase().includes(h));
-    if (found) return found;
-  }
-  // Respaldo: voz genérica del idioma (Google), luego cualquiera del idioma
-  return matching.find(v => v.name.toLowerCase().includes('google')) || matching[0] || null;
+  if (!matching.length) return null;
+  const females = FEMALE_VOICES[currentLang === 'pt' ? 'pt' : 'es'];
+  const MALE_NAMES = ['álvaro','alvaro','jorge','juan','diego','carlos','pablo','raúl','raul','enrique','miguel','antônio','antonio','daniel','felipe','ricardo','heitor'];
+
+  const score = (v) => {
+    const n = v.name.toLowerCase();
+    let s = 0;
+    if (ROBOTIC_VOICES.some(r => n.includes(r))) s -= 100;            // evita voces robóticas
+    if (/natural|neural|online|premium|enhanced|siri/.test(n)) s += 50; // alta calidad explícita
+    if (/mónica|monica|paulina|luciana|microsoft|google/.test(n)) s += 30; // naturales conocidas
+    if (v.localService === false) s += 12;                            // online suele sonar mejor
+    if (females.some(f => n.includes(f)) || /\bfemale\b|femenino|feminino|mujer|mulher/.test(n)) s += 30; // preferencia femenina
+    if (MALE_NAMES.some(m => n.includes(m)) || /\bmale\b|masculino/.test(n)) s -= 40; // evita masculinas
+    return s;
+  };
+
+  return matching.slice().sort((a, b) => score(b) - score(a))[0];
 }
 
 function buildAudioText() {
@@ -1036,7 +1047,7 @@ function speakNext(voice) {
   const u = new SpeechSynthesisUtterance(audioChunks[audioIndex]);
   u.lang = currentLang === 'pt' ? 'pt-BR' : 'es-ES';
   if (voice) u.voice = voice;
-  u.rate = 0.95; u.pitch = 0.9; u.volume = 1;
+  u.rate = 0.9; u.pitch = 1.12; u.volume = 1;
   u.onend = () => { audioIndex++; if (audioState !== 'idle') speakNext(voice); };
   u.onerror = () => { audioIndex++; if (audioState === 'playing') speakNext(voice); };
   window.speechSynthesis.speak(u);
