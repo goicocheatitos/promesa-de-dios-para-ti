@@ -945,9 +945,13 @@ function showError(msg) {
   document.getElementById('promise-card').innerHTML = `<div class="no-promise"><div class="icon">⚠️</div><h3>Error</h3><p>${msg}</p></div>`;
 }
 
-// ─── Lectura en audio (Text-to-Speech) ───────────────────────────
+// ─── Lectura en audio ────────────────────────────────────────────
+// Modo "file": reproduce el audio pregrabado con la voz del Dr. Tito (si existe).
+// Modo "tts":  respaldo con la voz gratuita del navegador.
 const TTS_OK = ('speechSynthesis' in window);
 let audioState = 'idle';            // idle | playing | paused
+let audioMode = null;               // 'file' | 'tts'
+let audioEl = null;                 // elemento <audio> para el modo file
 let audioChunks = [];
 let audioIndex = 0;
 let cachedVoices = [];
@@ -1059,9 +1063,12 @@ function speakNext(voice) {
   window.speechSynthesis.speak(u);
 }
 
-function startAudio() {
+// Respaldo: voz del navegador (Text-to-Speech)
+function startTTS() {
+  if (!TTS_OK) { alert(L('audio_unsupported')); return; }
   const text = buildAudioText();
   if (!text) return;
+  audioMode = 'tts';
   window.speechSynthesis.cancel();
   audioChunks = splitChunks(text);
   audioIndex = 0;
@@ -1069,21 +1076,50 @@ function startAudio() {
   speakNext(pickVoice());
 }
 
+// Reproduce el audio pregrabado con la voz del Dr. Tito
+function playFile(url) {
+  audioMode = 'file';
+  if (!audioEl) {
+    audioEl = new Audio();
+    audioEl.onended = () => stopAudio();
+    audioEl.onerror = () => { audioMode = null; startTTS(); };  // si el archivo falla, cae a TTS
+  }
+  audioEl.src = url;
+  audioEl.play();
+  setAudioState('playing');
+}
+
+// Intenta primero el audio con la voz del Dr. Tito; si no existe, usa el navegador
+async function startAudio() {
+  const url = `./audio/${currentLang}/${getTodayKey()}.mp3`;
+  try {
+    const res = await fetch(url, { method: 'HEAD' });
+    if (res.ok) { playFile(url); return; }
+  } catch (e) { /* sin conexión o 404: usar respaldo */ }
+  startTTS();
+}
+
 function stopAudio() {
   setAudioState('idle');
   audioChunks = []; audioIndex = 0;
   if (TTS_OK) window.speechSynthesis.cancel();
+  if (audioEl) { audioEl.pause(); audioEl.currentTime = 0; }
+  audioMode = null;
 }
 
 function toggleAudio() {
-  if (!TTS_OK) { alert(L('audio_unsupported')); return; }
-  if (audioState === 'idle') startAudio();
-  else if (audioState === 'playing') { window.speechSynthesis.pause(); setAudioState('paused'); }
-  else if (audioState === 'paused') { window.speechSynthesis.resume(); setAudioState('playing'); }
+  if (audioState === 'idle') { startAudio(); return; }
+  const useFile = (audioMode === 'file' && audioEl);
+  if (audioState === 'playing') {
+    useFile ? audioEl.pause() : window.speechSynthesis.pause();
+    setAudioState('paused');
+  } else if (audioState === 'paused') {
+    useFile ? audioEl.play() : window.speechSynthesis.resume();
+    setAudioState('playing');
+  }
 }
 
 // ─── Init ─────────────────────────────────────────────────────────
-if (!TTS_OK) { const ab = document.getElementById('audio-btn'); if (ab) ab.style.display = 'none'; }
 applyLangUI();
 loadPromesas();
 </script>
